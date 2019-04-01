@@ -1,0 +1,45 @@
+{
+  "name": "bjd-db",
+  "version": "0.0.1",
+  "description": "An online bjd database",
+  "main": "build/bundle.js",
+  "author": "Katy Richard",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "^24.0.11",
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.40",
+    "@types/koa-static": "^4.0.1",
+    "@types/react": "^16.8.10",
+    "@types/react-dom": "^16.8.3",
+    "apollo-server-koa": "^2.4.8",
+    "graphql": "^14.2.1",
+    "jest": "^24.5.0",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "mysql": "^2.16.0",
+    "mysql-migrations": "^1.0.6",
+    "path": "^0.12.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^2.1.8"
+  },
+  "devDependencies": {
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.4.1",
+    "webpack": "4.28.3",
+    "webpack-cli": "^3.3.0"
+  },
+  "scripts": {
+    "start": "node build/bundle.js",
+    "build": "webpack -p",
+    "postinstall": "cd client && yarn build"
+  },
+  "engines": {
+    "node": "11.1.0",
+    "npm": "5.3.0",
+    "yarn": "1.12.3"
+  }
+}
