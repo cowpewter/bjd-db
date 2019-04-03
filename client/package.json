@@ -29,10 +29,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "engines": {
-    "node": "11.1.0",
-    "npm": "5.3.0",
-    "yarn": "1.12.3"
-  }
+  ]
 }

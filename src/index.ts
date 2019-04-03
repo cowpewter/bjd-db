@@ -1,20 +1,20 @@
+require('reflect-metadata'); // important for typeorm
+import { createConnection } from 'typeorm';
+import validateEnvironment from './util/validateEnvironment.js';
+
 import Server from './server';
 
-const validateEnvironment = require('./utils/validateEnvironment.js');
-
-const main = () => {
+const main = async () => {
   validateEnvironment();
-  try {
-    const server = new Server({
-      port: Number(process.env.PORT),
-      dbUrl: process.env.JAWSDB_MARIA_URL,
-    });
-    server.start();
-    console.log('Server listing on port ' + process.env.PORT);
-  } catch (e) {
-    console.error(e);
-  }
-  
-}
+
+  await createConnection();
+
+  const server = new Server({
+    jwtSecret: process.env.JWT_SECRET!,
+    port: Number(process.env.PORT),
+  });
+  server.start();
+  console.log(`Server listing on port ${process.env.PORT}`);
+};
 
 main();
