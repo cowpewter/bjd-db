@@ -8,6 +8,7 @@ const main = () => {
     const server = new Server({
       port: Number(process.env.PORT),
       dbUrl: process.env.JAWSDB_MARIA_URL,
+      jwtSecret: process.env.JWT_SECRET,
     });
     server.start();
     console.log('Server listing on port ' + process.env.PORT);
