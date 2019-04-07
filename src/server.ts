@@ -2,12 +2,12 @@ import { ApolloServer } from 'apollo-server-koa';
 import * as fs from 'fs';
 import * as jsonwebtoken from 'jsonwebtoken';
 import * as Koa from 'koa';
-// import * as KoaJwt from 'koa-jwt';
 import * as KoaRouter from 'koa-router';
 import * as serve from 'koa-static';
 import schema from './schema';
 
 import { getRepository } from 'typeorm';
+import { Jwt } from './entity/Jwt';
 import { User } from './entity/User';
 
 interface ServerConfig {
@@ -24,7 +24,8 @@ const jwtDecodeToken = async (ctx: any, next: any) => {
         jwtCookie,
         process.env.JWT_SECRET!,
       );
-      if (tokenData.user) {
+      const jwtRow = await getRepository(Jwt).findOne({ token: jwtCookie });
+      if (tokenData.user && jwtRow && !jwtRow.revoked) {
         user = tokenData.user;
       }
     } catch (e) {
@@ -41,7 +42,7 @@ const jwtDecodeToken = async (ctx: any, next: any) => {
       }
     }
   }
-  console.log('user', user);
+  console.log('current user', user);
   ctx.user = user;
   ctx.jwt = jwtCookie || '';
   await next();
@@ -62,7 +63,6 @@ class Server {
     // set up jwt for remaining paths
     // passthrough true ensures you can still access paths w/o auth
     // each path will check authorization individually
-    // app.use(KoaJwt({ secret: config.jwtSecret, passthrough: true }));
     app.use(jwtDecodeToken);
 
     // Create Graphql server and apply it

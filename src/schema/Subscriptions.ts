@@ -7,4 +7,5 @@ type Subscriptions {
 }
 `;
 
+// default resolver is sufficient
 export const resolver = {};

@@ -1,5 +1,6 @@
 import { getRepository } from 'typeorm';
 import { baseUserImageUrl, Image } from '../entity/Image';
+import { User } from '../entity/User';
 
 export const typeDef = `
 type Image {
@@ -12,25 +13,22 @@ type Image {
 
 export const resolver = {
   Image: {
-    url: async (image: Image) => {
-      const user = await getRepository(Image)
-        .createQueryBuilder('image')
-        .innerJoinAndSelect('image.user', 'user')
-        .getOne();
+    url: async (parent: Image) => {
+      const user = await getRepository(User)
+        .findOne({ where: { image: parent } });
       if (!user) {
         return null;
       }
-      return `${baseUserImageUrl}/${user.id}/${image.filename}`;
+      return `${baseUserImageUrl}/${user.id}/${parent.filename}`;
     },
-    thumbnail: async (image: Image) => {
-      const user = await getRepository(Image)
-        .createQueryBuilder('image')
-        .innerJoinAndSelect('image.user', 'user')
-        .getOne();
+
+    thumbnail: async (parent: Image) => {
+      const user = await getRepository(User)
+        .findOne({ where: { image: parent } });
       if (!user) {
         return null;
       }
-      const filenameSplit = image.filename.split('.');
+      const filenameSplit = parent.filename.split('.');
       const extension = filenameSplit.pop();
       const nameNoExt = filenameSplit.join('.');
       const filename = [nameNoExt, '_thumbnail.', extension].join('');

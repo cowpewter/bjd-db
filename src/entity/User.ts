@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Album } from './Album';
 import { Comment } from './Comment';
 import { Doll } from './Doll';
 import { DollWishlist } from './DollWishlist';
@@ -49,6 +50,9 @@ export class User {
 
   @OneToMany(() => Doll, (doll: Doll) => doll.user)
   dolls: Doll[];
+
+  @OneToMany(() => Album, (album: Album) => album.user)
+  albums: Album[];
 
   @OneToMany(() => DollWishlist, (wishlist: DollWishlist) => wishlist.user)
   wishlists: DollWishlist[];

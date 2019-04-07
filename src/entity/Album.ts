@@ -4,6 +4,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -12,6 +13,7 @@ import {
 import { Comment } from './Comment';
 import { Doll } from './Doll';
 import { Image } from './Image';
+import { User } from './User';
 
 @Entity()
 export class Album {
@@ -27,6 +29,9 @@ export class Album {
 
   @Column({ default: false })
   isPrivate: boolean;
+
+  @ManyToOne(() => User, (user: User) => user.albums)
+  user: User;
 
   @OneToMany(() => Image, (image: Image) => image.album)
   images: Image[];

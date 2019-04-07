@@ -5,7 +5,7 @@ import { Album } from '../entity/Album';
 import { Doll } from '../entity/Doll';
 import { DollWishlist } from '../entity/DollWishlist';
 import { EmailAddress } from '../entity/EmailAddress';
-import { baseUserImageUrl, Image } from '../entity/Image';
+import { Image } from '../entity/Image';
 import { Jwt } from '../entity/Jwt';
 import { User } from '../entity/User';
 import cleanJwts from '../util/cleanJwts';
@@ -138,7 +138,7 @@ type User {
   id: ID!
   username: String!
   emailAddress: String!
-  profileImage: String
+  profileImage: Image
   dolls: [Doll!]
   dollWishlists: [DollWishlist!]
   albums: [Album!]
@@ -150,53 +150,52 @@ type User {
 
 export const resolver = {
   User: {
-    async emailAddress(user: User) {
+    emailAddress: async (parent: User) => {
       const email = await getRepository(EmailAddress)
-        .findOne(user.emailAddress);
+        .findOne(parent.emailAddress);
       return email ? email.emailAddress : null;
     },
-    async profileImage(user: User) {
-      const image = await getRepository(Image)
-        .findOne(user.profileImage);
-      if (!image) {
-        return null;
-      }
-      return `${baseUserImageUrl}/${user.id}/${image.filename}`;
-    },
-    dolls(user: User, _: any, ctx: GQLContext) {
-      const where = ctx.koaCtx.user.id === user.id ?
-        { user } :
-        { user, isPrivate: false };
+
+    profileImage: async (parent: User) =>
+      getRepository(Image)
+      .findOne({ where: { user: parent } }),
+
+    dolls: (parent: User, _: any, ctx: GQLContext) => {
+      const where = ctx.koaCtx.user.id === parent.id ?
+        { parent } :
+        { parent, isPrivate: false };
       return getRepository(Doll)
-          .find(where);
+          .find({ where });
     },
-    dollWishlists(user: User, _: any, ctx: GQLContext) {
-      const where = ctx.koaCtx.user.id === user.id ?
-        { user } :
-        { user, isPrivate: false };
+
+    dollWishlists: (parent: User, _: any, ctx: GQLContext) => {
+      const where = ctx.koaCtx.user.id === parent.id ?
+        { parent } :
+        { parent, isPrivate: false };
       return getRepository(DollWishlist)
-          .find(where);
+          .find({ where });
     },
-    albums(user: User, _: any, ctx: GQLContext) {
-      const where = ctx.koaCtx.user.id === user.id ?
-        { user } :
-        { user, isPrivate: false };
+
+    albums: (parent: User, _: any, ctx: GQLContext) => {
+      const where = ctx.koaCtx.user.id === parent.id ?
+        { parent } :
+        { parent, isPrivate: false };
       return getRepository(Album)
-          .find(where);
+          .find({ where });
     },
-    isAdmin(user: User, _: any, ctx: GQLContext) {
-      return ctx.koaCtx.user.id === user.id ?
-        user.isAdmin :
-        null;
-    },
-    isMod(user: User, _: any, ctx: GQLContext) {
-      console.log(ctx.koaCtx.user.user);
-      return ctx.koaCtx.user.id === user.id ?
-        user.isMod :
-        null;
-    },
-    async subscriptions(user: User, _: any, ctx: GQLContext) {
-      if (ctx.koaCtx.user.id !== user.id) {
+
+    isAdmin: (parent: User, _: any, ctx: GQLContext) =>
+      ctx.koaCtx.user.id === parent.id ?
+        parent.isAdmin :
+        null,
+
+    isMod: (parent: User, _: any, ctx: GQLContext) =>
+      ctx.koaCtx.user.id === parent.id ?
+        parent.isMod :
+        null,
+
+    subscriptions: async (parent: User, _: any, ctx: GQLContext) => {
+      if (ctx.koaCtx.user.id !== parent.id) {
         return null;
       }
       // @todo how the hell do i convert this to typeorm?
@@ -207,7 +206,7 @@ export const resolver = {
             ON sTag.id = joinTag.subscriptionTagId
           INNER JOIN user on user.emailAddressId = joinTag.emailAddressId
           WHERE user.id = ?;`,
-          [user.id],
+          [parent.id],
       );
       const subByName = subs.reduce(
         (acc: any, cur: { name: string }) => {
@@ -226,16 +225,15 @@ export const resolver = {
 
   Query: {
     me: async (_: any, __: any, ctx: GQLContext) => {
-      if (ctx.user && ctx.user.id) {
+      if (ctx.koaCtx.user.id !== '0') {
         return getRepository(User)
-          .findOne({ id: ctx.user.id });
+          .findOne({ id: ctx.koaCtx.user.id });
       }
       return null;
     },
 
-    user: async (_: any, args: IdArgs) => {
-      return await getRepository(User).findOne(args.id);
-    },
+    user: (_: any, args: IdArgs) =>
+      getRepository(User).findOne(args.id),
   },
 
   Mutation: {
@@ -274,7 +272,7 @@ export const resolver = {
 
     logout: (_:any, __:any, ctx: GQLContext) => {
       clearJwtCookie(ctx);
-      revokeToken(ctx.jwt);
+      revokeToken(ctx.koaCtx.jwt);
       return { success: true };
     },
 
@@ -339,7 +337,7 @@ export const resolver = {
       user.password = args.newPassword;
       await getRepository(User).save(user);
       const exclude: StringToBoolean = {};
-      exclude[ctx.jwt] = true;
+      exclude[ctx.koaCtx.jwt] = true;
       revokeAllTokens(user, exclude);
 
       return { success: true };

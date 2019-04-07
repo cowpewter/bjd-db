@@ -4,4 +4,5 @@ type SuccessOutput {
 }
 `;
 
+// no extra resolvers needed
 export const resolver = {};

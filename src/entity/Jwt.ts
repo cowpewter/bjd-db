@@ -17,13 +17,14 @@ export class Jwt {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Index()
+  @Index({ unique: true })
   @Column()
   token: string;
 
   @Column({ default: false })
   revoked: boolean;
 
+  @Index()
   @ManyToOne(() => User, (user: User) => user.jwts)
   user: User;
 

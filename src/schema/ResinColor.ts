@@ -1,21 +1,22 @@
 import { getRepository } from 'typeorm';
 import { Company } from '../entity/Company';
-import { DollPart } from '../entity/DollPart';
+import { ResinColor } from '../entity/ResinColor';
 
 export const typeDef = `
-type DollPart {
+type ResinColor {
   id: ID!
-  type: String!
   name: String!
-  company: Company
+  colorType: String!
+  type: String!
+  company: Company!
 }
 `;
 
 // default resolvers are sufficient
 export const resolver = {
-  DollPart: {
-    company: (parent: DollPart) =>
+  ResinColor: {
+    company: (parent: ResinColor) =>
       getRepository(Company)
-        .findOne({ where: { dollPart: parent } }),
+        .findOne({ where: { resinColor: parent } }),
   },
 };
