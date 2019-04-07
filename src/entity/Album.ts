@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 
 import { Comment } from './Comment';
-import { Image } from './Image';
 import { Doll } from './Doll';
+import { Image } from './Image';
 
 @Entity()
 export class Album {
@@ -24,6 +24,9 @@ export class Album {
 
   @Column({ default: true })
   allowComments: boolean;
+
+  @Column({ default: false })
+  isPrivate: boolean;
 
   @OneToMany(() => Image, (image: Image) => image.album)
   images: Image[];

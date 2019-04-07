@@ -1,32 +1,33 @@
+// @TODO Move this to redis once we can afford it
+
 import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import { Album } from './Album';
 import { User } from './User';
 
-export const baseUserImageUrl = '/userImages';
-
 @Entity()
-export class Image {
+export class Jwt {
 
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
+  @Index()
   @Column()
-  filename: string;
+  token: string;
 
-  @ManyToOne(() => User, (user: User) => user.images)
+  @Column({ default: false })
+  revoked: boolean;
+
+  @ManyToOne(() => User, (user: User) => user.jwts)
   user: User;
 
-  @ManyToOne(() => Album, (album: Album) => album.images)
-  album: Album;
-
+  @Index()
   @CreateDateColumn()
   createTimestamp: Date;
 

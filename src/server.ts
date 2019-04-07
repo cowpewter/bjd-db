@@ -1,9 +1,11 @@
-// import { graphqlKoa } from 'apollo-server-koa';
+import { ApolloServer } from 'apollo-server-koa';
 import * as fs from 'fs';
+import * as jsonwebtoken from 'jsonwebtoken';
 import * as Koa from 'koa';
-import * as KoaJwt from 'koa-jwt';
+// import * as KoaJwt from 'koa-jwt';
 import * as KoaRouter from 'koa-router';
 import * as serve from 'koa-static';
+import schema from './schema';
 
 import { getRepository } from 'typeorm';
 import { User } from './entity/User';
@@ -13,23 +15,63 @@ interface ServerConfig {
   port: number;
 }
 
+const jwtDecodeToken = async (ctx: any, next: any) => {
+  const jwtCookie = ctx.cookies.get('jwt');
+  let user: { id: string } = { id: '0' };
+  if (jwtCookie) {
+    try {
+      const tokenData: any = jsonwebtoken.verify(
+        jwtCookie,
+        process.env.JWT_SECRET!,
+      );
+      if (tokenData.user) {
+        user = tokenData.user;
+      }
+    } catch (e) {
+      if (ctx.originalUrl === '/graphql') {
+        ctx.body = {
+          errors: [{
+            message: 'You have been signed out. Please sign in again.',
+            data: {
+              type: 'SignedOutError',
+            },
+          }],
+        };
+        return;
+      }
+    }
+  }
+  console.log('user', user);
+  ctx.user = user;
+  ctx.jwt = jwtCookie || '';
+  await next();
+};
+
 class Server {
   port: number;
   app: Koa;
 
   constructor(config: ServerConfig) {
-    this.port = config.port;
-    this.app = new Koa();
+    const app = new Koa();
 
     // Serve up static files from client dir
     const clientBuildDir =
       process.env.ENVIRONMENT === 'prod' ? '/app/client/build' : 'client/build';
-    this.app.use(serve(clientBuildDir));
+    app.use(serve(clientBuildDir));
 
     // set up jwt for remaining paths
     // passthrough true ensures you can still access paths w/o auth
     // each path will check authorization individually
-    this.app.use(KoaJwt({ secret: config.jwtSecret, passthrough: true }));
+    // app.use(KoaJwt({ secret: config.jwtSecret, passthrough: true }));
+    app.use(jwtDecodeToken);
+
+    // Create Graphql server and apply it
+    const apollo = new ApolloServer({
+      schema,
+      playground: process.env.ENVIRONMENT !== 'prod',
+      context: ({ ctx }) => ({ koaCtx: ctx }),
+    });
+    apollo.applyMiddleware({ app });
 
     // Create routes
     const router = new KoaRouter();
@@ -41,13 +83,6 @@ class Server {
       return ctx;
     });
 
-    // @todo api endpoints
-    /*
-    router.get('/graphql', ctx => {
-
-    });
-    */
-
     // Serve up the app for any non-matched urls
     // frontend router will take over from there
     router.all('*', (ctx) => {
@@ -58,9 +93,13 @@ class Server {
       return ctx;
     });
 
-    this.app.use(router.routes());
-    this.app.use(router.allowedMethods());
+    // Apply the router
+    app.use(router.routes());
+    app.use(router.allowedMethods());
 
+    // Set our props
+    this.port = config.port;
+    this.app = app;
   }
 
   start() {

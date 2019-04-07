@@ -14,8 +14,11 @@ import {
 
 import { Comment } from './Comment';
 import { Doll } from './Doll';
+import { DollWishlist } from './DollWishlist';
 import { EmailAddress } from './EmailAddress';
 import { Image } from './Image';
+import { Jwt } from './Jwt';
+import { UserPart } from './UserPart';
 
 @Entity()
 export class User {
@@ -47,8 +50,20 @@ export class User {
   @OneToMany(() => Doll, (doll: Doll) => doll.user)
   dolls: Doll[];
 
+  @OneToMany(() => DollWishlist, (wishlist: DollWishlist) => wishlist.user)
+  wishlists: DollWishlist[];
+
+  @OneToMany(() => UserPart, (part: UserPart) => part.user)
+  parts: UserPart[];
+
   @OneToMany(() => Comment, (comment: Comment) => comment.user)
   userComments: Comment[];
+
+  @OneToMany(() => Image, (image: Image) => image.user)
+  images: Image;
+
+  @OneToMany(() => Jwt, (jwt: Jwt) => jwt.user)
+  jwts: Jwt[];
 
   @CreateDateColumn()
   createTimestamp: Date;

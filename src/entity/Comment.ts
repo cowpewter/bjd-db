@@ -3,13 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Album } from './Album';
-import { User } from './User';
 import { Doll } from './Doll';
+import { User } from './User';
 
 @Entity()
 export class Comment {
@@ -22,6 +23,12 @@ export class Comment {
 
   @ManyToOne(() => User, (user: User) => user.userComments)
   user: User;
+
+  @OneToMany(() => Comment, (comment: Comment) => comment.album)
+  replies: Comment[];
+
+  @ManyToOne(() => Comment, (comment: Comment) => comment.replies)
+  comment: Comment;
 
   @ManyToOne(() => Doll, (doll: Doll) => doll.comments)
   doll: Doll;

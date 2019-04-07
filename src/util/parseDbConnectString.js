@@ -1,3 +1,4 @@
+// Expects dbString in the format "mysql://username:password@host:port/database
 const parseDbConnectString = (dbString) => {
   dbString = dbString.replace('mysql://', '');
 

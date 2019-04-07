@@ -2,15 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-import { UserPart } from './UserPart';
+import { Doll } from './Doll';
+import { User } from './User';
 
 @Entity()
-export class FaceupArtist {
+export class DollWishlist {
 
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
@@ -18,14 +20,14 @@ export class FaceupArtist {
   @Column()
   name: string;
 
-  @Column({ length: 2, nullable: true })
-  country: string; // ISO Country code
+  @Column({ default: false })
+  isPrivate: boolean;
 
-  @Column({ nullable: true })
-  website: string;
+  @OneToMany(() => Doll, (doll: Doll) => doll.wishlist)
+  dolls: Doll[];
 
-  @OneToMany(() => UserPart, (part: UserPart) => part.artist)
-  parts: UserPart[];
+  @ManyToOne(() => User, (user: User) => user.wishlists)
+  user: User;
 
   @CreateDateColumn()
   createTimestamp: Date;

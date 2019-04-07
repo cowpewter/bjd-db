@@ -11,13 +11,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { Album } from './Album';
 import { Comment } from './Comment';
 import { DollConfiguration } from './DollConfiguration';
 import { DollDescription } from './DollDescription';
 import { DollHistory } from './DollHistory';
+import { DollWishlist } from './DollWishlist';
 import { Image } from './Image';
 import { User } from './User';
-import { Album } from './Album';
 
 export type DollSex = 'Male' | 'Female' | 'Intersex';
 export type DollGender = 'Masculine' | 'Feminine' | 'Nonbinary' | 'Agender';
@@ -43,11 +44,17 @@ export class Doll {
   @Column({ default: false })
   isWishlist: boolean;
 
+  @Column({ default: false })
+  isPrivate: boolean;
+
   @Column({ default: true })
   allowComments: boolean;
 
   @ManyToOne(() => User, (user: User) => user.dolls, { nullable: false })
   user: User;
+
+  @ManyToOne(() => DollWishlist, (wishlist: DollWishlist) => wishlist.dolls)
+  wishlist: DollWishlist;
 
   @OneToOne(() => Image, { nullable: true })
   @JoinColumn()

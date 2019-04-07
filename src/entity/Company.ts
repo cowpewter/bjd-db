@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { DollPart } from './DollPart';
+import { ResinColor } from './ResinColor';
 
 @Entity()
 export class Company {
@@ -26,6 +27,9 @@ export class Company {
 
   @OneToMany(() => DollPart, (part: DollPart) => part.company)
   parts: DollPart[];
+
+  @OneToMany(() => ResinColor, (color: ResinColor) => color.company)
+  resinColors: ResinColor[];
 
   @CreateDateColumn()
   createTimestamp: Date;
