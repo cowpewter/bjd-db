@@ -1,32 +1,19 @@
-import * as React from 'react';
-import './App.css';
+import React, { SFC } from 'react';
+import { ApolloProvider } from 'react-apollo';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-class App extends React.Component {
-  state = {
-    message: 'Loading...',
-  };
+import Home from './components/Home';
 
-  componentDidMount = () => {
-    this.fetchMessage();
-  }
+import client from './store/client';
 
-  fetchMessage = async () => {
-    const response = await fetch('/hello');
-    const message = await response.text();
-    this.setState({ message });
-  }
-
-  render() {
-    const { message } = this.state;
-
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1>{message}</h1>
-        </header>
-      </div>
-    );
-  }
-}
+const App: SFC = () => {
+  return (
+    <ApolloProvider client={client}>
+      <Router>
+          <Route path="/" exact component={Home} />
+      </Router>
+    </ApolloProvider>
+  );
+};
 
 export default App;
