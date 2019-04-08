@@ -4,7 +4,9 @@ import * as jsonwebtoken from 'jsonwebtoken';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as serve from 'koa-static';
+import * as moment from 'moment-timezone';
 import schema from './schema';
+import { signAndSaveSession } from './util/jwt';
 
 import { getRepository } from 'typeorm';
 import { Jwt } from './entity/Jwt';
@@ -15,7 +17,7 @@ interface ServerConfig {
   port: number;
 }
 
-const jwtDecodeToken = async (ctx: any, next: any) => {
+const jwtDecodeToken = async (ctx: Koa.Context, next: any) => {
   const jwtCookie = ctx.cookies.get('jwt');
   let user: { id: string } = { id: '0' };
   if (jwtCookie) {
@@ -24,9 +26,19 @@ const jwtDecodeToken = async (ctx: any, next: any) => {
         jwtCookie,
         process.env.JWT_SECRET!,
       );
+      // Check the expire time and issue a new jwt if we're expiring in 1 day
+      console.log('tokendata', tokenData);
+
       const jwtRow = await getRepository(Jwt).findOne({ token: jwtCookie });
       if (tokenData.user && jwtRow && !jwtRow.revoked) {
         user = tokenData.user;
+
+        // If token expires in a day, set a new one
+        if (tokenData.exp < moment().subtract('1d').unix()) {
+          const tokenUser = new User();
+          tokenUser.id = user.id;
+          signAndSaveSession(tokenUser, ctx);
+        }
       }
     } catch (e) {
       if (ctx.originalUrl === '/graphql') {

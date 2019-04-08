@@ -6,9 +6,15 @@ import { Doll } from '../entity/Doll';
 import { DollWishlist } from '../entity/DollWishlist';
 import { EmailAddress } from '../entity/EmailAddress';
 import { Image } from '../entity/Image';
-import { Jwt } from '../entity/Jwt';
 import { User } from '../entity/User';
-import cleanJwts from '../util/cleanJwts';
+import {
+  cleanJwts,
+  clearJwtCookie,
+  revokeAllTokens,
+  revokeToken,
+  signAndSaveSession,
+} from '../util/jwt';
+import { StringToBoolean } from '../util/types';
 import { IdArgs } from './args';
 import { AuthError, LoginError, PasswordError, SignupError, UserNotFoundError } from './errors';
 import { GQLContext } from './index';
@@ -43,10 +49,6 @@ interface ResetPasswordArgs {
   newPassword: string;
 }
 
-interface StringToBoolean {
-  [key: string]: boolean;
-}
-
 const findUserByEmailOrUsername = (username: string): Promise<User | undefined> =>
   getRepository(User)
     .createQueryBuilder('user')
@@ -61,61 +63,6 @@ const validatePassword = async (user: User, password: string): Promise<boolean> 
     .where('user.id = :id', { id: user.id })
     .getRawOne();
   return bcrypt.compare(password, hashedPw);
-};
-
-const signToken = (user: User, expiresIn: string) => {
-  return jsonwebtoken.sign(
-    {
-      user: {
-        id: user.id,
-      },
-    },
-    process.env.JWT_SECRET!,
-    { expiresIn },
-  );
-};
-
-const setJwtCookie = (ctx: GQLContext, token: string) => {
-  ctx.koaCtx.cookies.set(
-    'jwt',
-    token,
-    { httpOnly: false, expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) },
-  );
-};
-
-const clearJwtCookie = (ctx: GQLContext) => {
-  ctx.koaCtx.cookies.set(
-    'jwt',
-    '',
-    { httpOnly: false },
-  );
-};
-
-const saveToken = (token: string, user: User) => {
-  const jwt = new Jwt();
-  jwt.token = token;
-  jwt.user = user;
-  getRepository(Jwt).save(jwt);
-};
-
-const revokeToken = async (token: string) => {
-  const jwt = await getRepository(Jwt)
-    .findOne({ token });
-  if (jwt) {
-    jwt.revoked = true;
-    getRepository(Jwt).save(jwt);
-  }
-};
-
-const revokeAllTokens = async (user: User, exclude: StringToBoolean) => {
-  const jwts = await getRepository(Jwt)
-    .find({ user });
-  jwts.forEach((jwt) => {
-    if (!exclude[jwt.token]) {
-      jwt.revoked = true;
-    }
-  });
-  getRepository(Jwt).save(jwts);
 };
 
 export const typeDef = `
@@ -256,10 +203,8 @@ export const resolver = {
         throw authError;
       }
 
-      // Generate token and save to cookies
-      const token = signToken(user, '30d');
-      saveToken(token, user);
-      setJwtCookie(ctx, token);
+      // Generate token and save to cookies/db
+      signAndSaveSession(user, ctx.koaCtx);
 
       // 10% chance on any login to clear old Jwts out of MySql
       // @todo Temporary until we can afford Redis
@@ -271,7 +216,7 @@ export const resolver = {
     },
 
     logout: (_:any, __:any, ctx: GQLContext) => {
-      clearJwtCookie(ctx);
+      clearJwtCookie(ctx.koaCtx);
       revokeToken(ctx.koaCtx.jwt);
       return { success: true };
     },
@@ -307,10 +252,8 @@ export const resolver = {
       await getRepository(EmailAddress).save(newAddress);
       await getRepository(User).save(newUser);
 
-      // Generate token and save to cookies
-      const token = signToken(newUser, '30d');
-      saveToken(token, newUser);
-      setJwtCookie(ctx, token);
+      // Generate token and save to cookies/db
+      signAndSaveSession(newUser, ctx.koaCtx);
 
       return newUser;
     },
