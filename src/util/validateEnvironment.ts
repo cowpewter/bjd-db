@@ -4,6 +4,9 @@ const validateEnvironment = () => {
     'JAWSDB_MARIA_URL',
     'ENVIRONMENT',
     'JWT_SECRET',
+    'S3_ACCESS_KEY',
+    'S3_SECRET',
+    'S3_BUCKET',
   ];
 
   requiredEnvVariables.forEach((variableName: string) => {

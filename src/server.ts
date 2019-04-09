@@ -1,64 +1,18 @@
 import { ApolloServer } from 'apollo-server-koa';
 import * as fs from 'fs';
-import * as jsonwebtoken from 'jsonwebtoken';
 import * as Koa from 'koa';
 import * as KoaRouter from 'koa-router';
 import * as serve from 'koa-static';
-import * as moment from 'moment-timezone';
+import { Connections } from './connection';
+import { serveImagesMiddleware, uploadImagesMiddleware } from './library/image';
+import { jwtSessionMiddleware } from './library/jwt';
 import schema from './schema';
-import { signAndSaveSession } from './util/jwt';
-
-import { getRepository } from 'typeorm';
-import { Jwt } from './entity/Jwt';
-import { User } from './entity/User';
 
 interface ServerConfig {
   jwtSecret: string;
   port: number;
+  connections: Connections;
 }
-
-const jwtDecodeToken = async (ctx: Koa.Context, next: any) => {
-  const jwtCookie = ctx.cookies.get('jwt');
-  let user: { id: string } = { id: '0' };
-  if (jwtCookie) {
-    try {
-      const tokenData: any = jsonwebtoken.verify(
-        jwtCookie,
-        process.env.JWT_SECRET!,
-      );
-      // Check the expire time and issue a new jwt if we're expiring in 1 day
-      console.log('tokendata', tokenData);
-
-      const jwtRow = await getRepository(Jwt).findOne({ token: jwtCookie });
-      if (tokenData.user && jwtRow && !jwtRow.revoked) {
-        user = tokenData.user;
-
-        // If token expires in a day, set a new one
-        if (tokenData.exp < moment().subtract('1d').unix()) {
-          const tokenUser = new User();
-          tokenUser.id = user.id;
-          signAndSaveSession(tokenUser, ctx);
-        }
-      }
-    } catch (e) {
-      if (ctx.originalUrl === '/graphql') {
-        ctx.body = {
-          errors: [{
-            message: 'You have been signed out. Please sign in again.',
-            data: {
-              type: 'SignedOutError',
-            },
-          }],
-        };
-        return;
-      }
-    }
-  }
-  console.log('current user', user);
-  ctx.user = user;
-  ctx.jwt = jwtCookie || '';
-  await next();
-};
 
 class Server {
   port: number;
@@ -72,10 +26,18 @@ class Server {
       process.env.ENVIRONMENT === 'prod' ? '/app/client/build' : 'client/build';
     app.use(serve(clientBuildDir));
 
+    // Setup our image server
+    // it will call next() for any path but /images
+    app.use(serveImagesMiddleware);
+
     // set up jwt for remaining paths
     // passthrough true ensures you can still access paths w/o auth
     // each path will check authorization individually
-    app.use(jwtDecodeToken);
+    app.use(jwtSessionMiddleware);
+
+    // Setup our upload image handler
+    // it will call next() for any path but /uploadImage
+    app.use(uploadImagesMiddleware);
 
     // Create Graphql server and apply it
     const apollo = new ApolloServer({
@@ -87,13 +49,6 @@ class Server {
 
     // Create routes
     const router = new KoaRouter();
-
-    // Hello World!
-    router.get('/hello', async (ctx) => {
-      const count = await getRepository(User).count();
-      ctx.body = `Hello World!! There are ${count} users.`;
-      return ctx;
-    });
 
     // Serve up the app for any non-matched urls
     // frontend router will take over from there
@@ -110,6 +65,7 @@ class Server {
     app.use(router.allowedMethods());
 
     // Set our props
+    app.context.connections = config.connections;
     this.port = config.port;
     this.app = app;
   }

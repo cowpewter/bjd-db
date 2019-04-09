@@ -13,8 +13,8 @@ import {
   revokeAllTokens,
   revokeToken,
   signAndSaveSession,
-} from '../util/jwt';
-import { StringToBoolean } from '../util/types';
+} from '../library/jwt';
+import { StringToBoolean } from '../library/types';
 import { IdArgs } from './args';
 import { AuthError, LoginError, PasswordError, SignupError, UserNotFoundError } from './errors';
 import { GQLContext } from './index';
@@ -186,6 +186,7 @@ export const resolver = {
   Mutation: {
     login: async (_:any, args: LoginArgs, ctx: GQLContext) => {
       const user = await findUserByEmailOrUsername(args.username);
+      console.log('login', user);
       const authError = new LoginError({
         data: {
           fields: {
