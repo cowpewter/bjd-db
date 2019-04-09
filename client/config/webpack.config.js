@@ -59,6 +59,9 @@ const lessOptions = {
     'box-shadow-base': '0 2px 8px rgba(0, 0, 0, .15)',
     'body-background': '#81ac95',
     'component-background': '#e7d7c7',
+    'font-family': `'Montserrat', sans-serif`,
+    'pagination-font-family': `'Montserrat', sans-serif`,
+    'statistic-font-family': `'Montserrat', sans-serif`,
   },
   javascriptEnabled: true,
 };
