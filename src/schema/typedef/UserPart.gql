@@ -1,0 +1,8 @@
+type UserPart {
+  id: ID!
+  user: User!
+  part: DollPart!
+  artist: FaceupArtist
+  resinColor: ResinColor!
+  isWishlist: Boolean
+}

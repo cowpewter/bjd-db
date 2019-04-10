@@ -1,0 +1,7 @@
+type ResinColor {
+  id: ID!
+  name: String!
+  colorType: String!
+  type: String!
+  company: Company!
+}

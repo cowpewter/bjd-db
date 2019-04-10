@@ -17,6 +17,6 @@ export interface Me {
   subscriptions: Subscriptions;
 }
 
-export interface MeData {
+export interface MeOutput {
   me: Me;
 }

@@ -1,0 +1,6 @@
+mutation toggleSignupModal {
+  toggleSignupModal {
+    loginOpen
+    signupOpen
+  }
+}

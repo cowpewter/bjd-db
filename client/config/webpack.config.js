@@ -44,21 +44,21 @@ const lessModuleRegex = /\.m.less$/;
 
 const lessOptions = {
   modifyVars: {
-    'primary-color': '#2b7f71',
-    'link-color': '#2b7f71',
-    'success-color': '#52c41a',
-    'warning-color': '#efb649',
-    'error-color': '#f03d51',
+    'primary-color': '#4ECDC4',
+    'link-color': '#4ECDC4',
+    'success-color': '#9BFC92', //'#52c41a',
+    'warning-color': '#FFE66D', //'#efb649',
+    'error-color': '#BF393D', //'#f03d51',
     'font-size-base': '14px',
     'heading-color': 'rgba(0, 0, 0, .85)',
     'text-color': 'rgba(0, 0, 0, .65)',
     'text-color-secondary': 'rgba(0, 0, 0, .45)',
     'disabled-color': 'rgba(0, 0, 0, .25)',
     'border-radius-base': '4px',
-    'border-color-base': '#d9d9d9',
+    'border-color-base': '#F7FFF7',
     'box-shadow-base': '0 2px 8px rgba(0, 0, 0, .15)',
-    'body-background': '#81ac95',
-    'component-background': '#e7d7c7',
+    'body-background': '#4ECDC4',
+    'component-background': '#FCEAEA',
     'font-family': `'Montserrat', sans-serif`,
     'pagination-font-family': `'Montserrat', sans-serif`,
     'statistic-font-family': `'Montserrat', sans-serif`,
@@ -289,6 +289,8 @@ module.exports = function(webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        '@component': path.resolve(__dirname, '../src/component'),
+        '@store': path.resolve(__dirname, '../src/store'),
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -300,7 +302,7 @@ module.exports = function(webpackEnv) {
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
         new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
-      ],
+      ]
     },
     resolveLoader: {
       plugins: [
@@ -347,11 +349,6 @@ module.exports = function(webpackEnv) {
                 limit: 10000,
                 name: 'static/media/[name].[hash:8].[ext]',
               },
-            },
-            {
-              test: /\.(graphql|gql)$/,
-              exclude: /node_modules/,
-              loader: require.resolve('graphql-tag/loader'),
             },
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
@@ -505,6 +502,11 @@ module.exports = function(webpackEnv) {
                 'sass-loader'
               ),
             },
+            {
+              test: /\.(graphql|gql)$/,
+              exclude: /node_modules/,
+              loader: require.resolve('graphql-tag/loader'),
+            },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
             // In production, they would get copied to the `build` folder.
@@ -516,7 +518,7 @@ module.exports = function(webpackEnv) {
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
-              exclude: [/\.(js|mjs|jsx|ts|tsx|graphql|gql)$/, /\.html$/, /\.json$/],
+              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               options: {
                 name: 'static/media/[name].[hash:8].[ext]',
               },

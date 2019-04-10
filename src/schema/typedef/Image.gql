@@ -1,0 +1,6 @@
+type Image {
+  id: ID!
+  url: String!
+  thumbnail: String!
+  user: User!
+}

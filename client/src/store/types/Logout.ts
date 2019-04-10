@@ -1,5 +1,5 @@
 import { Success } from './Success';
 
-export interface LogoutData {
+export interface LogoutOutput {
   logout: Success;
 }

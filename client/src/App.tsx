@@ -2,9 +2,9 @@ import React, { SFC } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Home from './components/Home';
+import Home from '@component/Home';
 
-import client from './store/client';
+import client from '@store/client';
 
 const App: SFC = () => {
   return (

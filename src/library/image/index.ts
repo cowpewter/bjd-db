@@ -1,19 +1,20 @@
+import { Image } from '@entity/Image';
+import { User } from '@entity/User';
 import * as asyncBusboy from 'async-busboy';
 import * as S3 from 'aws-sdk/clients/s3';
+import { AWSError } from 'aws-sdk/lib/error';
 import * as fileType from 'file-type';
 import { ReadStream } from 'fs';
 import * as Koa from 'koa';
 import * as sharp from 'sharp';
 import { getRepository } from 'typeorm';
 import * as uuidv4 from 'uuid/v4';
-import { Image } from '../../entity/Image';
-import { User } from '../../entity/User';
 
 // No typings avail for this lib
 const text2png = require('text2png');
 const bufferImageSize = require('buffer-image-size');
 
-export const serveImagesMiddleware = async (ctx: Koa.Context, next: any) => {
+export const serveImagesMiddleware = async (ctx: Koa.Context, next: Function) => {
   // Only affect the /images/ path
   if (ctx.originalUrl.indexOf('/images') !== 0) {
     return await next();
@@ -43,7 +44,7 @@ export const serveImagesMiddleware = async (ctx: Koa.Context, next: any) => {
   }
 };
 
-export const uploadImagesMiddleware = async (ctx: Koa.Context, next: any) => {
+export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) => {
   if (ctx.originalUrl !== '/uploadImage') {
     return await next();
   }
@@ -71,9 +72,8 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: any) => {
     ctx.status = 400;
     throw new Error('No files to upload!');
   }
-  const results: any = [];
+  const results: {[key: number]: boolean | string} = [];
   await asyncForEach(files, async (file, index) => {
-    results[index] = {};
     const imageId = uuidv4();
     let fileBuffer = await streamToBuffer(file);
     const type = fileType(fileBuffer);
@@ -172,7 +172,7 @@ const getFile = (s3: S3, key: string): Promise<S3.GetObjectOutput> => {
         Bucket: process.env.S3_BUCKET!,
         Key: key,
       },
-      (err: any, data: S3.GetObjectOutput) => {
+      (err: AWSError, data: S3.GetObjectOutput) => {
         if (err) {
           console.log(err);
           reject(false);
@@ -184,17 +184,16 @@ const getFile = (s3: S3, key: string): Promise<S3.GetObjectOutput> => {
   });
 };
 
-const asyncForEach =
-  async (array: any[], callback: (obj: any, index: number, source: any[]) => void) => {
-    // tslint:disable-next-line no-increment-decrement
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  };
+async function asyncForEach<T>(array: T[], callback: (obj: T, index: number, source: T[]) => void) {
+  // tslint:disable-next-line no-increment-decrement
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
 
 const streamToBuffer = async (stream: ReadStream): Promise<Buffer> => {
   return new Promise((resolve, reject) => {
-    const buffers: any[] = [];
+    const buffers: Uint8Array[] = [];
     stream.on('error', (error) => {
       reject(error);
     });

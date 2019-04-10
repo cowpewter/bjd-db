@@ -1,0 +1,10 @@
+extend type Query {
+  dollWishlist(id: ID!): DollWishlist
+}
+
+type DollWishlist {
+  id: ID!
+  name: String!
+  user: User!
+  dolls: [Doll!]
+}

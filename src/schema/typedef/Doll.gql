@@ -1,0 +1,17 @@
+extend type Query {
+  doll(id: ID!): Doll
+}
+
+type Doll {
+  id: ID!
+  name: String!
+  profileImage: Image
+  sex: String
+  gender: String
+  isSold: Boolean!
+  isWishlist: Boolean!
+  allowComments: Boolean!
+  user: User!
+  description: String
+  configurations: [DollConfiguration!]
+}

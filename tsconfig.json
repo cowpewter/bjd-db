@@ -21,6 +21,15 @@
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": false,
+    "paths": {
+      "@connection/*": ["src/connection/*"],
+      "@entity/*": ["src/entity/*"],
+      "@library/*": ["src/library/*"],
+      "@schema/*": ["src/schema/*"],
+      "@util/*": ["src/util/*"],
+      "@component/*": ["client/src/component/*"],
+      "@store/*": ["client/src/store/*"],
+    }
   },
   "lib": [
     "es2015"
@@ -31,5 +40,5 @@
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
-  ]
+  ],
 }

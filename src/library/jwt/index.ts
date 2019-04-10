@@ -1,12 +1,12 @@
+import { Jwt } from '@entity/Jwt';
+import { User } from '@entity/User';
+import { StringToBoolean } from '@library/types';
 import * as jsonwebtoken from 'jsonwebtoken';
 import * as Koa from 'koa';
 import * as moment from 'moment';
 import { getManager, getRepository } from 'typeorm';
-import { Jwt } from '../../entity/Jwt';
-import { User } from '../../entity/User';
-import { StringToBoolean } from '../../library/types';
 
-export const cookieMiddleware = async (ctx: Koa.Context, next: any) => {
+export const cookieMiddleware = async (ctx: Koa.Context, next: Function) => {
   ctx.cookie = {};
   const cookieHeader = ctx.headers.cookie;
   console.log('raw cookies', cookieHeader, ctx.cookies.get('jwt'));
@@ -22,7 +22,7 @@ export const cookieMiddleware = async (ctx: Koa.Context, next: any) => {
   return await next();
 };
 
-export const jwtSessionMiddleware = async (ctx: Koa.Context, next: any) => {
+export const jwtSessionMiddleware = async (ctx: Koa.Context, next: Function) => {
   const jwtCookie = ctx.cookies.get('jwt');
   console.log('cookie', jwtCookie);
   let user: { id: string, username: string } = { id: '0', username: '' };

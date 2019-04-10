@@ -1,0 +1,27 @@
+extend type Query {
+  User: User
+  me: User
+  user(id: ID!): User
+}
+
+extend type Mutation {
+  login(username: String!, password: String!): User
+  logout: SuccessOutput
+  signup(username: String!, password: String!, emailAddress: String!): User
+  changePassword(existingPassword: String!, newPassword: String!): SuccessOutput
+  initiatePasswordReset(username: String!): SuccessOutput
+  resetPassword(token: String!, newPassword: String!): SuccessOutput
+}
+
+type User {
+  id: ID!
+  username: String!
+  emailAddress: String!
+  profileImage: Image
+  dolls: [Doll!]
+  dollWishlists: [DollWishlist!]
+  albums: [Album!]
+  isAdmin: Boolean
+  isMod: Boolean
+  subscriptions: Subscriptions
+}
