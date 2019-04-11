@@ -44,6 +44,7 @@ const lessModuleRegex = /\.m.less$/;
 
 const lessOptions = {
   modifyVars: {
+    'white': '#FFFFFF',
     'primary-color': '#4ECDC4',
     'link-color': '#4ECDC4',
     'success-color': '#9BFC92', //'#52c41a',
@@ -59,6 +60,7 @@ const lessOptions = {
     'box-shadow-base': '0 2px 8px rgba(0, 0, 0, .15)',
     'body-background': '#4ECDC4',
     'component-background': '#FCEAEA',
+    'modal-mask-bg': 'fade(@white, 65%)',
     'font-family': `'Montserrat', sans-serif`,
     'pagination-font-family': `'Montserrat', sans-serif`,
     'statistic-font-family': `'Montserrat', sans-serif`,

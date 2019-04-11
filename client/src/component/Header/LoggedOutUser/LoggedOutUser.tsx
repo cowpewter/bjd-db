@@ -1,24 +1,31 @@
 import React, { SFC } from 'react';
+import LoggedOutUserView from './LoggedOutUserView';
 
-import { GQL_OPEN_LOGIN_MODAL, OpenLoginModalMutation } from '@store/query/ModalState';
+import {
+  GQL_OPEN_LOGIN_MODAL,
+  GQL_OPEN_SIGNUP_MODAL,
+  OpenLoginModalMutation,
+  OpenSignupModalMutation,
+} from '@store/query/ModalState';
 
 interface LoggedOutUserProps {
   className?: string;
 }
 
-const LoginLink: SFC = () => (
+const Login: SFC<LoggedOutUserProps> = ({ className }) => (
   <OpenLoginModalMutation mutation={GQL_OPEN_LOGIN_MODAL}>
-    {(openLoginModal) => {
-      return <a onClick={() => { openLoginModal(); }}>Login</a>;
-    }}
+    {openLoginModal => (
+      <OpenSignupModalMutation mutation={GQL_OPEN_SIGNUP_MODAL}>
+        {openSignupModal => (
+          <LoggedOutUserView
+            className={className}
+            openLoginModal={openLoginModal}
+            openSignupModal={openSignupModal}
+          />
+        )}
+      </OpenSignupModalMutation>
+    )}
   </OpenLoginModalMutation>
 );
 
-const LoggedOutUser:SFC<LoggedOutUserProps> = ({ className }) => (
-  <div className={className}>
-    <LoginLink />
-    <a>Signup</a>
-  </div>
-);
-
-export default LoggedOutUser;
+export default Login;

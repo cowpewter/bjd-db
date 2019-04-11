@@ -15,13 +15,6 @@ import {
 } from '@library/jwt';
 import { StringToBoolean } from '@library/types';
 import { IdArgs } from '@schema/args';
-import {
-  AuthError,
-  LoginError,
-  PasswordError,
-  SignupError,
-  UserNotFoundError,
-} from '@schema/errors';
 import { GQLContext } from '@schema/index';
 import * as bcrypt from 'bcrypt';
 import * as jsonwebtoken from 'jsonwebtoken';
@@ -200,13 +193,16 @@ const resolver = {
         .findOne({ emailAddress: args.emailAddress });
 
       if (user || email) {
-        throw new UserInputError('', {
-          validationErrors: {
-            username: user ? 'This username is already in use' : undefined,
-            emailAddress: email ? 'This email address is already in use' : undefined,
-          },
-        });
+        const validationErrors: any = {};
+        if (user) {
+          validationErrors.username = 'This username is already in use';
+        }
+        if (email) {
+          validationErrors.emailAddress = 'This email address is already in use';
+        }
+        throw new UserInputError('Unable to create account', { validationErrors });
       }
+
       const newAddress = new EmailAddress();
       newAddress.emailAddress = args.emailAddress;
       const newUser = new User();
@@ -252,7 +248,7 @@ const resolver = {
       if (!user) {
         throw new UserInputError('', {
           validationErrors: {
-            username: 'No user found',
+            username: `No user found for ${args.username}`,
           },
         });
       }

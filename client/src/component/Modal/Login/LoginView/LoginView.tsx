@@ -1,15 +1,17 @@
 import { Button, Form, Icon, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
 import { Me } from '@store/type/Me';
 import { GraphQLError } from 'graphql';
 
-const style = require('./LoginView.m.less');
+const sharedStyle = require('@component/Modal/SharedStyles.m.less');
 
 interface LoginViewProps {
   closeLoginModal: MutationFn<null>;
+  openSignupModal: MutationFn<null>;
+  openForgotPwModal: MutationFn<null>;
   login: MutationFn<Me, OperationVariables>;
   form: WrappedFormUtils;
 }
@@ -30,7 +32,11 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
     closeLoginModal();
   }
 
-  private handleSubmit = () => {
+  private handleSubmit = (ev?: SyntheticEvent) => {
+    if (ev) {
+      ev.preventDefault();
+    }
+
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         this.props.login({ variables:  values })
@@ -62,18 +68,20 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
     });
   }
 
+  private handleForgot = () => {
+    this.handleCancel();
+    this.props.openForgotPwModal();
+  }
+
+  private handleSignup = () => {
+    this.handleCancel();
+    this.props.openSignupModal();
+  }
+
   private handleKeyDown = (ev: React.KeyboardEvent<HTMLInputElement>) => {
     if (ev.keyCode === 13) {
       this.handleSubmit();
     }
-  }
-
-  private handleForgot = () => {
-
-  }
-
-  private handleSignup = () => {
-
   }
 
   public render() {
@@ -82,7 +90,6 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
 
     return (
       <Modal
-        className={style.root}
         title="Login"
         visible={true}
         width={300}
@@ -97,7 +104,7 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
         ]}
       >
         {!!errorMsgs.length && (
-          <div>
+          <div className={sharedStyle.modalError}>
             {errorMsgs.map((message, i) => {
               return <p key={i}>{message}</p>;
             })}

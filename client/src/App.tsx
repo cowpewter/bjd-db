@@ -2,17 +2,14 @@ import React, { SFC } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
+// Apollo Client
+import client from '@store/client';
+
 // Router components
 import Home from '@component/Home';
 
-import client from '@store/client';
-
-// Modal query
-const GQL_MODAL_STATE = require('@store/graphql/ModalState.gql');
-import { ModalStateQuery } from '@store/query/ModalState';
-
 // Modals
-import Login from '@component/Modal/Login';
+import Modals from '@component/Modal/Modals';
 
 const App: SFC = () => {
   return (
@@ -21,17 +18,7 @@ const App: SFC = () => {
           <Route path="/" exact component={Home} />
       </Router>
 
-      <ModalStateQuery query={GQL_MODAL_STATE}>
-        {({ loading, error, data }) => {
-          if (loading || error || !data) {
-            return null;
-          }
-          if (data.loginOpen) {
-            return <Login />;
-          }
-          return null;
-        }}
-      </ModalStateQuery>
+      <Modals />
     </ApolloProvider>
   );
 };

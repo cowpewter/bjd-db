@@ -1,0 +1,4 @@
+extend type Mutation {
+  openForgotPwModal: null
+  closeForgotPwModal: null
+}

@@ -1,4 +1,5 @@
 query modalState {
   loginOpen @client
   signupOpen @client
+  forgotPwOpen @client
 }

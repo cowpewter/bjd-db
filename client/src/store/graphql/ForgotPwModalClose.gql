@@ -1,0 +1,3 @@
+mutation closeForgotPwModal {
+  closeForgotPwModal @client
+}

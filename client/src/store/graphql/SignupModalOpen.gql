@@ -1,0 +1,3 @@
+mutation openSignupModal {
+  openSignupModal @client
+}

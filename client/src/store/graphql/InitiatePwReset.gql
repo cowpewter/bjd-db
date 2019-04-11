@@ -1,0 +1,5 @@
+mutation initiatePasswordReset($username: String!) {
+  initiatePasswordReset(username: $username) {
+    success
+  }
+}
