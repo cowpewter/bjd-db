@@ -2,8 +2,8 @@ import { Dropdown, Menu } from 'antd';
 import React, { SFC } from 'react';
 import { Link } from 'react-router-dom';
 
-import { GQL_LOGOUT, LogoutMutation } from '@store/queries/Logout';
-import { Me } from '@store/types/Me';
+import { GQL_LOGOUT, LogoutMutation } from '@store/query/Logout';
+import { Me } from '@store/type/Me';
 
 const { Item: MenuItem, Divider } = Menu;
 

@@ -1,0 +1,4 @@
+extend type Mutation {
+  openLoginModal: null
+  closeLoginModal: null
+}

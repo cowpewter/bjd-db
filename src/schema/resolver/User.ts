@@ -1,3 +1,5 @@
+import { AuthenticationError, UserInputError } from 'apollo-server';
+
 import { Album } from '@entity/Album';
 import { Doll } from '@entity/Doll';
 import { DollWishlist } from '@entity/DollWishlist';
@@ -163,14 +165,7 @@ const resolver = {
     login: async (_: any, args: LoginArgs, ctx: GQLContext) => {
       const user = await findUserByEmailOrUsername(args.username);
       console.log('login', user);
-      const authError = new LoginError({
-        data: {
-          fields: {
-            username: { valid: false, message: '' },
-            password: { valid: false, message: '' },
-          },
-        },
-      });
+      const authError = new UserInputError('Invalid username or password');
 
       if (!user) {
         throw authError;
@@ -205,18 +200,10 @@ const resolver = {
         .findOne({ emailAddress: args.emailAddress });
 
       if (user || email) {
-        throw new SignupError({
-          data: {
-            fields: {
-              username: {
-                valid: !user,
-                message: user ? 'This username is already in use' : '',
-              },
-              emailAddress: {
-                valid: !email,
-                message: email ? 'This email address is already in use' : '',
-              },
-            },
+        throw new UserInputError('', {
+          validationErrors: {
+            username: user ? 'This username is already in use' : undefined,
+            emailAddress: email ? 'This email address is already in use' : undefined,
           },
         });
       }
@@ -239,17 +226,14 @@ const resolver = {
       const user = await getRepository(User)
         .findOne(ctx.koaCtx.user.id);
       if (!user) {
-        throw new AuthError();
+        throw new AuthenticationError('You must be logged in');
       }
 
       const validPW = await validatePassword(user, args.existingPassword);
       if (!validPW) {
-        throw new PasswordError({
-          data: {
-            fields: {
-              existingPassword: { valid: false, message: '' },
-              newPassword: { valid: true, message: '' },
-            },
+        throw new UserInputError('', {
+          validationErrors: {
+            existingPassword: 'Password incorrect',
           },
         });
       }
@@ -266,11 +250,9 @@ const resolver = {
     initiatePasswordReset: async (_: any, args: InitPwResetArgs) => {
       const user = await findUserByEmailOrUsername(args.username);
       if (!user) {
-        throw new UserNotFoundError({
-          data: {
-            fields: {
-              username: { valid: false, message: '' },
-            },
+        throw new UserInputError('', {
+          validationErrors: {
+            username: 'No user found',
           },
         });
       }
@@ -290,13 +272,13 @@ const resolver = {
         process.env.JWT_SECRET!,
       );
       if (!tokenData.user || !tokenData.user.id) {
-        throw new UserNotFoundError();
+        throw new AuthenticationError('You must be logged in');
       }
 
       const user = await getRepository(User)
         .findOne(tokenData.user.id);
       if (!user) {
-        throw new UserNotFoundError();
+        throw new AuthenticationError('You must be logged in');
       }
 
       user.password = args.newPassword;

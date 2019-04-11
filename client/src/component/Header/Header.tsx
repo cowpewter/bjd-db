@@ -2,7 +2,7 @@ import React, { SFC } from 'react';
 
 import HeaderView from '@component/Header/HeaderView';
 
-import { GQL_ME, MeQuery } from '@store/queries/Me';
+import { GQL_ME, MeQuery } from '@store/query/Me';
 
 const Header: SFC = () => {
   return (

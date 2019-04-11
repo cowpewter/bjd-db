@@ -1,13 +1,13 @@
 import { Menu } from 'antd';
-import React, { Fragment, SFC } from 'react';
+import React, { SFC } from 'react';
 import { Link } from 'react-router-dom';
 
 import LoggedInUser from '@component/Header/LoggedInUser';
 import LoggedOutUser from '@component/Header/LoggedOutUser';
 
-import { Me } from '@store/types/Me';
+import { Me } from '@store/type/Me';
 
-import style from './HeaderView.m.less';
+const style = require('./HeaderView.m.less');
 
 const { Item: MenuItem } = Menu;
 

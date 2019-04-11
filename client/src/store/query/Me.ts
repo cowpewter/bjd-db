@@ -1,7 +1,6 @@
 import { Query } from 'react-apollo';
-import { getGQL } from './';
 
-import { MeOutput } from '@store/types/Me';
+import { MeOutput } from '@store/type/Me';
 const GQL_ME = require('@store/graphql/Me.gql');
 
 export { GQL_ME, MeOutput };
