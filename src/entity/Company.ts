@@ -9,6 +9,7 @@ import {
 
 import { DollPart } from './DollPart';
 import { ResinColor } from './ResinColor';
+import { SocialMediaLink } from './SocialMediaLink';
 
 @Entity()
 export class Company {
@@ -22,8 +23,8 @@ export class Company {
   @Column({ length: 2, nullable: true })
   country: string; // ISO Country code
 
-  @Column({ nullable: true })
-  website: string;
+  @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.company)
+  socialLinks: SocialMediaLink[];
 
   @OneToMany(() => DollPart, (part: DollPart) => part.company)
   parts: DollPart[];

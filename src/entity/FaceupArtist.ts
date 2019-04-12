@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { SocialMediaLink } from './SocialMediaLink';
 import { UserPart } from './UserPart';
 
 @Entity()
@@ -21,8 +22,8 @@ export class FaceupArtist {
   @Column({ length: 2, nullable: true })
   country: string; // ISO Country code
 
-  @Column({ nullable: true })
-  website: string;
+  @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.artist)
+  socialLinks: SocialMediaLink[];
 
   @OneToMany(() => UserPart, (part: UserPart) => part.artist)
   parts: UserPart[];

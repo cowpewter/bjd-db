@@ -6,5 +6,5 @@ type FaceupArtist {
   id: ID!
   name: String!
   country: String
-  website: String
+  socialLinks: [SocialMediaLink!]
 }

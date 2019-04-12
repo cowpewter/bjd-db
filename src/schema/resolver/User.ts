@@ -5,7 +5,9 @@ import { Doll } from '@entity/Doll';
 import { DollWishlist } from '@entity/DollWishlist';
 import { EmailAddress } from '@entity/EmailAddress';
 import { Image } from '@entity/Image';
+import { SocialMediaLink } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
+import { UserDescription } from '@entity/UserDescription';
 import {
   cleanJwts,
   clearJwtCookie,
@@ -19,7 +21,6 @@ import { GQLContext } from '@schema/index';
 import * as bcrypt from 'bcrypt';
 import * as jsonwebtoken from 'jsonwebtoken';
 import { getManager, getRepository } from 'typeorm';
-import { UserDescription } from '../../entity/UserDescription';
 
 interface LoginArgs {
   username: string;
@@ -93,6 +94,10 @@ const resolver = {
         .findOne({ where: { user: parent } });
       return (result && result.description) || null;
     },
+
+    socialLinks: (parent: User) =>
+      getRepository(SocialMediaLink)
+        .find({ where: { user: parent } }),
 
     dolls: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?

@@ -1,0 +1,5 @@
+type SocialMediaLink {
+  id: ID!
+  service: String!
+  url: String!
+}

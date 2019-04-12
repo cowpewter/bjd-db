@@ -21,6 +21,7 @@ type User {
   emailAddress: String!
   profileImage: Image
   description: String
+  socialLinks: [SocialMediaLink!]
   dolls: [Doll!]
   dollWishlists: [DollWishlist!]
   albums: [Album!]

@@ -19,6 +19,7 @@ import { DollWishlist } from './DollWishlist';
 import { EmailAddress } from './EmailAddress';
 import { Image } from './Image';
 import { Jwt } from './Jwt';
+import { SocialMediaLink } from './SocialMediaLink';
 import { UserDescription } from './UserDescription';
 import { UserPart } from './UserPart';
 
@@ -52,6 +53,9 @@ export class User {
   @OneToOne(() => UserDescription, (description: UserDescription) => description.user)
   @JoinColumn()
   description: UserDescription;
+
+  @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.user)
+  socialLinks: SocialMediaLink[];
 
   @OneToMany(() => Doll, (doll: Doll) => doll.user)
   dolls: Doll[];
