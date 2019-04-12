@@ -1,4 +1,6 @@
-import { Button, Form, Icon, Input, Modal } from 'antd';
+import Errors from '@component/shared/Errors';
+import FaIcon from '@component/shared/FaIcon';
+import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import React, { Fragment, SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
@@ -111,13 +113,9 @@ class ForgotPwView extends React.Component<ForgotPwViewProps, ForgotPwViewState>
               and we'll send you an email with a link to
               reset your password.
             </p>
-            {!!errorMsgs.length && (
-              <div className={sharedStyle.modalError}>
-                {errorMsgs.map((message, i) => {
-                  return <p key={i}>{message}</p>;
-                })}
-              </div>
-            )}
+
+            <Errors errors={errorMsgs} />
+
             <Form layout="vertical" onSubmit={this.handleSubmit}>
               <Form.Item>
                 {getFieldDecorator('username', {
@@ -128,7 +126,7 @@ class ForgotPwView extends React.Component<ForgotPwViewProps, ForgotPwViewState>
                 })(
                   <Input
                     placeholder="Username or Email Address"
-                    prefix={<Icon type="user" />}
+                    prefix={<FaIcon className={sharedStyle.icon} type="light" icon="user" />}
                     onKeyDown={this.handleKeyDown}
                   />,
                 )}

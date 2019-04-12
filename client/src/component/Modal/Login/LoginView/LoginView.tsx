@@ -1,4 +1,6 @@
-import { Button, Form, Icon, Input, Modal } from 'antd';
+import Errors from '@component/shared/Errors';
+import FaIcon from '@component/shared/FaIcon';
+import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import React, { SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
@@ -103,13 +105,8 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
           </Button>,
         ]}
       >
-        {!!errorMsgs.length && (
-          <div className={sharedStyle.modalError}>
-            {errorMsgs.map((message, i) => {
-              return <p key={i}>{message}</p>;
-            })}
-          </div>
-        )}
+        <Errors errors={errorMsgs} />
+
         <Form layout="vertical" onSubmit={this.handleSubmit}>
           <Form.Item>
             {getFieldDecorator('username', {
@@ -117,7 +114,7 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
             })(
               <Input
                 placeholder="Username or Email Address"
-                prefix={<Icon type="user" />}
+                prefix={<FaIcon className={sharedStyle.icon} type="light" icon="user" />}
                 onKeyDown={this.handleKeyDown}
               />,
             )}
@@ -128,7 +125,7 @@ class LoginView extends React.Component<LoginViewProps, LoginViewState> {
             })(
               <Input
                 placeholder="Password"
-                prefix={<Icon type="lock" />}
+                prefix={<FaIcon className={sharedStyle.icon} type="light" icon="key" />}
                 type="password"
                 onKeyDown={this.handleKeyDown}
               />,

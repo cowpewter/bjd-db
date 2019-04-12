@@ -1,6 +1,8 @@
-import Header from '@component/Header';
-import { Button, Icon, Upload } from 'antd';
+import FaIcon from '@component/shared/FaIcon';
+import { Button, Upload } from 'antd';
 import React, { SFC } from 'react';
+
+import Page from '@component/Page';
 
 const onChange = (info: any) => {
   console.log('fileupload', info);
@@ -8,16 +10,13 @@ const onChange = (info: any) => {
 
 const Home: SFC = () => {
   return (
-    <div>
-     <Header />
-      <main>
-        <Upload action="/uploadImage" onChange={onChange}>
+    <Page>
+      <Upload action="/uploadImage" onChange={onChange}>
         <Button>
-          <Icon type="upload" /> Click to Upload
+          <FaIcon type="light" icon="upload"/> Click to Upload
         </Button>
-        </Upload>
-      </main>
-    </div>
+      </Upload>
+    </Page>
   );
 };
 

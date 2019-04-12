@@ -1,12 +1,13 @@
-import { Button, Form, Icon, Input, Modal } from 'antd';
+import Errors from '@component/shared/Errors';
+import FaIcon from '@component/shared/FaIcon';
+import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import React, { Fragment, SyntheticEvent } from 'react';
+import React, { SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
 import { Me } from '@store/type/Me';
 import { GraphQLError } from 'graphql';
 
-const style = require('./SignupView.m.less');
 const sharedStyle = require('@component/Modal/SharedStyles.m.less');
 
 interface SignupViewProps {
@@ -127,20 +128,13 @@ class SignupView extends React.Component<SignupViewProps, SignupViewState> {
 
     return (
       <Modal
-        className={style.root}
         title="Create Account"
         visible={true}
         width={success ? 500 : 300}
         onCancel={this.handleCancel}
         footer={footer}
       >
-        {!!errorMsgs.length && (
-          <div className={sharedStyle.modalError}>
-            {errorMsgs.map((message, i) => {
-              return <p key={i}>{message}</p>;
-            })}
-          </div>
-        )}
+        <Errors errors={errorMsgs} />
 
         {success && (
           <div>
@@ -161,7 +155,7 @@ class SignupView extends React.Component<SignupViewProps, SignupViewState> {
                 <Input
                   name="username"
                   placeholder="Username"
-                  prefix={<Icon type="user" />}
+                  prefix={<FaIcon className={sharedStyle.icon} type="light" icon="user" />}
                   onKeyDown={this.handleKeyDown}
                 />,
               )}
@@ -172,7 +166,7 @@ class SignupView extends React.Component<SignupViewProps, SignupViewState> {
               })(
                 <Input
                   placeholder="Email Address"
-                  prefix={<Icon type="mail" />}
+                  prefix={<FaIcon className={sharedStyle.icon} type="light" icon="at" />}
                   onKeyDown={this.handleKeyDown}
                 />,
               )}
@@ -183,7 +177,7 @@ class SignupView extends React.Component<SignupViewProps, SignupViewState> {
               })(
                 <Input
                   placeholder="Password"
-                  prefix={<Icon type="lock" />}
+                  prefix={<FaIcon className={sharedStyle.icon} type="light" icon="key" />}
                   type="password"
                   onKeyDown={this.handleKeyDown}
                 />,
@@ -195,7 +189,7 @@ class SignupView extends React.Component<SignupViewProps, SignupViewState> {
               })(
                 <Input
                   placeholder="Confirm Password"
-                  prefix={<Icon type="lock" />}
+                  prefix={<FaIcon className={sharedStyle.icon} type="light" icon="check" />}
                   type="password"
                   onKeyDown={this.handleKeyDown}
                 />,

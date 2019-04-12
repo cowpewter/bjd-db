@@ -9,7 +9,7 @@ import { getManager, getRepository } from 'typeorm';
 export const cookieMiddleware = async (ctx: Koa.Context, next: Function) => {
   ctx.cookie = {};
   const cookieHeader = ctx.headers.cookie;
-  console.log('raw cookies', cookieHeader, ctx.cookies.get('jwt'));
+
   if (cookieHeader) {
     const cookies = cookieHeader.split(';');
     cookies.forEach((item: string) => {
@@ -24,7 +24,7 @@ export const cookieMiddleware = async (ctx: Koa.Context, next: Function) => {
 
 export const jwtSessionMiddleware = async (ctx: Koa.Context, next: Function) => {
   const jwtCookie = ctx.cookies.get('jwt');
-  console.log('cookie', jwtCookie);
+
   let user: { id: string, username: string } = { id: '0', username: '' };
   if (jwtCookie) {
     try {
@@ -32,9 +32,8 @@ export const jwtSessionMiddleware = async (ctx: Koa.Context, next: Function) => 
         jwtCookie,
         process.env.JWT_SECRET!,
       );
-      // Check the expire time and issue a new jwt if we're expiring in 1 day
-      console.log('tokendata', tokenData);
 
+      // Check the expire time and issue a new jwt if we're expiring in 1 day
       const jwtRow = await getRepository(Jwt).findOne({ token: jwtCookie });
       if (tokenData.user && jwtRow && !jwtRow.revoked) {
         user = tokenData.user;
@@ -94,12 +93,10 @@ export const signToken = (user: User, expiresIn: string) => {
 };
 
 export const setJwtCookie = (koaCtx: Koa.Context, token: string) => {
-  console.log('setting cookie to', token);
-  console.log('expires', moment().add(30, 'days').toDate());
   koaCtx.cookies.set(
     'jwt',
     token,
-    { httpOnly: false, expires: moment().add(30, 'days').toDate() },
+    { httpOnly: true, expires: moment().add(30, 'days').toDate() },
   );
 };
 
@@ -107,7 +104,7 @@ export const clearJwtCookie = (koaCtx: Koa.Context) => {
   koaCtx.cookies.set(
     'jwt',
     '',
-    { httpOnly: false },
+    { httpOnly: true },
   );
 };
 

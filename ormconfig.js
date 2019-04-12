@@ -8,7 +8,7 @@ module.exports = {
    port,
    database,
    type: 'mysql',
-   logging: process.env.ENVIRONMENT !== 'prod',
+   logging: false, //process.env.ENVIRONMENT !== 'prod',
    entities: [
        'build/entity/**/*.js',
    ],

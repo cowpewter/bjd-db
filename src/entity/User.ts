@@ -19,6 +19,7 @@ import { DollWishlist } from './DollWishlist';
 import { EmailAddress } from './EmailAddress';
 import { Image } from './Image';
 import { Jwt } from './Jwt';
+import { UserDescription } from './UserDescription';
 import { UserPart } from './UserPart';
 
 @Entity()
@@ -47,6 +48,10 @@ export class User {
   @OneToOne(() => EmailAddress, (emailAddress: EmailAddress) => emailAddress.user)
   @JoinColumn()
   emailAddress: EmailAddress;
+
+  @OneToOne(() => UserDescription, (description: UserDescription) => description.user)
+  @JoinColumn()
+  description: UserDescription;
 
   @OneToMany(() => Doll, (doll: Doll) => doll.user)
   dolls: Doll[];

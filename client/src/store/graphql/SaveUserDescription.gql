@@ -1,0 +1,7 @@
+mutation saveUserDescription($id: ID!, $description: String!) {
+  saveUserDescription(id: $id, description: $description) {
+    id
+    username
+    description
+  }
+}

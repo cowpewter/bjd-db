@@ -1,6 +1,6 @@
 import React, { SFC } from 'react';
 
-import HeaderView from '@component/Header/HeaderView';
+import HeaderView from '@component/Page/Header/HeaderView';
 
 import { GQL_ME, MeQuery } from '@store/query/Me';
 

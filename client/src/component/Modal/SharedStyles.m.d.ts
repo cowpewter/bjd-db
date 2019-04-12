@@ -1,1 +1,1 @@
-export const modalError: string;
+export const icon: string;

@@ -19,6 +19,7 @@ import { GQLContext } from '@schema/index';
 import * as bcrypt from 'bcrypt';
 import * as jsonwebtoken from 'jsonwebtoken';
 import { getManager, getRepository } from 'typeorm';
+import { UserDescription } from '../../entity/UserDescription';
 
 interface LoginArgs {
   username: string;
@@ -50,6 +51,15 @@ interface ResetPasswordArgs {
   newPassword: string;
 }
 
+interface UsernameArgs {
+  username: string;
+}
+
+interface DescriptionArgs {
+  id: string;
+  description: string;
+}
+
 const findUserByEmailOrUsername = (username: string): Promise<User | undefined> =>
   getRepository(User)
     .createQueryBuilder('user')
@@ -74,9 +84,15 @@ const resolver = {
       return email ? email.emailAddress : null;
     },
 
-    profileImage: async (parent: User) =>
+    profileImage: (parent: User) =>
       getRepository(Image)
-      .findOne({ where: { user: parent } }),
+        .findOne({ where: { id: parent.profileImage } }),
+
+    description: async (parent: User) => {
+      const result = await getRepository(UserDescription)
+        .findOne({ where: { user: parent } });
+      return (result && result.description) || null;
+    },
 
     dolls: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?
@@ -152,6 +168,9 @@ const resolver = {
 
     user: (_: any, args: IdArgs) =>
       getRepository(User).findOne(args.id),
+
+    userByName: (_: any, args: UsernameArgs) =>
+      getRepository(User).findOne({ username: args.username }),
   },
 
   Mutation: {
@@ -281,6 +300,33 @@ const resolver = {
       await getRepository(User).save(user);
 
       return { success: true };
+    },
+
+    saveUserDescription: async (_: any, args: DescriptionArgs, ctx: GQLContext) => {
+      if (!ctx.koaCtx.user.id) {
+        throw new AuthenticationError('You must be logged in');
+      }
+      if (args.id !== ctx.koaCtx.user.id) {
+        throw new UserInputError('You can only edit your own profile');
+      }
+      const user = await getRepository(User)
+        .createQueryBuilder('user')
+        .leftJoinAndSelect('user.description', 'description')
+        .where('user.id =:id', { id: args.id })
+        .getOne();
+
+      if (!user) {
+        throw new Error('An unexpected error occured. Your changes were not saved.');
+      }
+
+      if (!user.description) {
+        user.description = new UserDescription();
+      }
+      user.description.description = args.description;
+      await getRepository(UserDescription).save(user.description);
+      await getRepository(User).save(user);
+
+      return user;
     },
   },
 };
