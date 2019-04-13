@@ -1,0 +1,10 @@
+type Purchase {
+  id: ID!
+  name: String!
+  purchaseDate: IsoDate
+  arrivalDate: IsoDate
+  purchasePrice: UsDollar
+  shippingPrice: UsDollar
+  user: User!
+  parts: [UserPart!]
+}

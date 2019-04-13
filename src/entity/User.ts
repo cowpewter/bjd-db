@@ -19,6 +19,7 @@ import { DollWishlist } from './DollWishlist';
 import { EmailAddress } from './EmailAddress';
 import { Image } from './Image';
 import { Jwt } from './Jwt';
+import { Purchase } from './Purchase';
 import { SocialMediaLink } from './SocialMediaLink';
 import { UserDescription } from './UserDescription';
 import { UserPart } from './UserPart';
@@ -68,6 +69,9 @@ export class User {
 
   @OneToMany(() => UserPart, (part: UserPart) => part.user)
   parts: UserPart[];
+
+  @OneToMany(() => Purchase, (purchase: Purchase) => purchase.user)
+  purchases: Purchase[];
 
   @OneToMany(() => Comment, (comment: Comment) => comment.user)
   userComments: Comment[];

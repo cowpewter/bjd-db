@@ -25,6 +25,7 @@ type User {
   dolls: [Doll!]
   dollWishlists: [DollWishlist!]
   albums: [Album!]
+  purchases: [Purchase!]
   isAdmin: Boolean
   isMod: Boolean
   subscriptions: Subscriptions

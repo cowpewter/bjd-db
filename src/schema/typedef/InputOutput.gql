@@ -1,3 +1,7 @@
 type SuccessOutput {
   success: Boolean!
 }
+
+scalar IsoDate
+
+scalar UsDollar

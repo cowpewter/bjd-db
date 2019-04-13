@@ -12,6 +12,7 @@ import {
 import { DollConfiguration } from './DollConfiguration';
 import { DollPart } from './DollPart';
 import { FaceupArtist } from './FaceupArtist';
+import { Purchase } from './Purchase';
 import { ResinColor } from './ResinColor';
 import { User } from './User';
 
@@ -35,6 +36,9 @@ export class UserPart {
 
   @ManyToOne(() => ResinColor, (color: ResinColor) => color.parts)
   resinColor: ResinColor;
+
+  @ManyToOne(() => Purchase, (purchase: Purchase) => purchase.parts)
+  purchase: Purchase;
 
   @OneToMany(() => DollConfiguration, (config: DollConfiguration) => config.head)
   headConfigs: UserPart[];

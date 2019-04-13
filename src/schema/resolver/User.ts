@@ -5,6 +5,7 @@ import { Doll } from '@entity/Doll';
 import { DollWishlist } from '@entity/DollWishlist';
 import { EmailAddress } from '@entity/EmailAddress';
 import { Image } from '@entity/Image';
+import { Purchase } from '@entity/Purchase';
 import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
 import { UserDescription } from '@entity/UserDescription';
@@ -123,6 +124,14 @@ const resolver = {
         { parent, isPrivate: false };
       return getRepository(Album)
           .find({ where });
+    },
+
+    purchases: (parent: User, _: any, ctx: GQLContext) => {
+      if (ctx.koaCtx.user.id !== parent.id) {
+        return null;
+      }
+      return getRepository(Purchase)
+          .find({ where: { user: parent } });
     },
 
     isAdmin: (parent: User, _: any, ctx: GQLContext) =>

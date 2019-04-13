@@ -15,6 +15,7 @@ const files = [
   'FaceupArtist.gql',
   'Image.gql',
   'InputOutput.gql',
+  'Purchase.gql',
   'ResinColor.gql',
   'SocialMediaLink.gql',
   'Subscriptions.gql',

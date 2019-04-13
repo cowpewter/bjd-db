@@ -8,10 +8,12 @@ import DollPart from '@schema/resolver/DollPart';
 import DollWishlist from '@schema/resolver/DollWishlist';
 import FaceupArtist from '@schema/resolver/FaceupArtist';
 import Image from '@schema/resolver/Image';
+import IsoDate from '@schema/resolver/IsoDate';
 import Mutation from '@schema/resolver/Mutation';
 import Query from '@schema/resolver/Query';
 import ResinColor from '@schema/resolver/ResinColor';
 import SocialMediaLink from '@schema/resolver/SocialMediaLink';
+import UsDollar from '@schema/resolver/UsDollar';
 import User from '@schema/resolver/User';
 import UserPart from '@schema/resolver/UserPart';
 
@@ -26,10 +28,12 @@ const resolvers = [
   DollWishlist,
   FaceupArtist,
   Image,
+  IsoDate,
   Mutation,
   Query,
   ResinColor,
   SocialMediaLink,
+  UsDollar,
   User,
   UserPart,
 ];
