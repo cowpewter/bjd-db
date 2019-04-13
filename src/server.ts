@@ -34,6 +34,13 @@ class Server {
     // Create routes
     const router = new KoaRouter();
 
+    // Serve up LetsEncrypt Acme Challenge
+    router.get('/.well-known/acme-challenge/ebbKdpC4RIT8GtWTYsJEjMAfaCP3_sUyNboOk5dE8Bc', (ctx) => {
+      ctx.body =
+        'ebbKdpC4RIT8GtWTYsJEjMAfaCP3_sUyNboOk5dE8Bc.9Jod_2D9joc-SdG9DYSwY0Tf8Dp13YDu57kJS_emxSs';
+      return ctx;
+    });
+
     // Hello World!
     router.get('/hello', async (ctx) => {
       const count = await getRepository(User).count();
