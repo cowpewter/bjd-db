@@ -1,13 +1,15 @@
 import { FaceupArtist } from '@entity/FaceupArtist';
-import { SocialMediaLink } from '@entity/SocialMediaLink';
+import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { IdArgs } from '@schema/args';
 import { getRepository } from 'typeorm';
 
 const resolver = {
   FaceupArtist: {
-    socialLinks: (parent: FaceupArtist) =>
-      getRepository(SocialMediaLink)
-        .find({ where: { artist: parent } }),
+    socialLinks: async (parent: FaceupArtist) => {
+      const links = await getRepository(SocialMediaLink)
+        .find({ where: { artist: parent } });
+      return links.sort(sortLinks);
+    },
   },
 
   Query: {

@@ -11,6 +11,7 @@ import Image from '@schema/resolver/Image';
 import Mutation from '@schema/resolver/Mutation';
 import Query from '@schema/resolver/Query';
 import ResinColor from '@schema/resolver/ResinColor';
+import SocialMediaLink from '@schema/resolver/SocialMediaLink';
 import User from '@schema/resolver/User';
 import UserPart from '@schema/resolver/UserPart';
 
@@ -28,6 +29,7 @@ const resolvers = [
   Mutation,
   Query,
   ResinColor,
+  SocialMediaLink,
   User,
   UserPart,
 ];

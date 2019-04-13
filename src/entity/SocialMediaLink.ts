@@ -10,7 +10,7 @@ import { Company } from './Company';
 import { FaceupArtist } from './FaceupArtist';
 import { User } from './User';
 
-export type SocialMediaLinkService = 'doa' | 'facebook' | 'instagram' |
+export type SocialMediaLinkService = 'doa' | 'facebook' | 'instagram' | 'twitter' |
   'tumblr' | 'etsy' | 'youtube' | 'pinterest' | 'website' | 'other';
 
 @Entity()
@@ -40,3 +40,20 @@ export class SocialMediaLink {
   @UpdateDateColumn()
   updateTimestamp: Date;
 }
+
+const sortPriority = {
+  website: 0,
+  doa: 1,
+  facebook: 2,
+  instagram: 3,
+  twitter: 4,
+  tumblr: 5,
+  etsy: 6,
+  youtube: 7,
+  pinterest: 8,
+  other: 9,
+};
+
+export const sortLinks = (a: SocialMediaLink, b: SocialMediaLink) => {
+  return sortPriority[a.service] - sortPriority[b.service];
+};

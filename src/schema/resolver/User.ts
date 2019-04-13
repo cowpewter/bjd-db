@@ -5,7 +5,7 @@ import { Doll } from '@entity/Doll';
 import { DollWishlist } from '@entity/DollWishlist';
 import { EmailAddress } from '@entity/EmailAddress';
 import { Image } from '@entity/Image';
-import { SocialMediaLink } from '@entity/SocialMediaLink';
+import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
 import { UserDescription } from '@entity/UserDescription';
 import {
@@ -95,9 +95,11 @@ const resolver = {
       return (result && result.description) || null;
     },
 
-    socialLinks: (parent: User) =>
-      getRepository(SocialMediaLink)
-        .find({ where: { user: parent } }),
+    socialLinks: async (parent: User) => {
+      const links = await getRepository(SocialMediaLink)
+        .find({ where: { user: parent } });
+      return links.sort(sortLinks);
+    },
 
     dolls: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?

@@ -3,3 +3,9 @@ type SocialMediaLink {
   service: String!
   url: String!
 }
+
+extend type Mutation {
+  addSocialMediaLink(service: String!, url: String!, ownerId: ID!, ownerType: String!): SocialMediaLink
+  editSocialMediaLink(id: ID!, url: String!): SocialMediaLink
+  deleteSocialMediaLink(id: ID!): SuccessOutput
+}
