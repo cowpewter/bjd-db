@@ -29,6 +29,9 @@ export class DollWishlist {
   @ManyToOne(() => User, (user: User) => user.wishlists)
   user: User;
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

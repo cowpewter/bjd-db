@@ -36,6 +36,9 @@ export class Comment {
   @ManyToOne(() => Album, (album: Album) => album.comments)
   album: Album;
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

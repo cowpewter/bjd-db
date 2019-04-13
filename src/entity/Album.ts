@@ -43,6 +43,9 @@ export class Album {
   @JoinTable()
   dolls: Doll[];
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

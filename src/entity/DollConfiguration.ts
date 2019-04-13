@@ -85,6 +85,9 @@ export class DollConfiguration {
   @JoinTable()
   extraParts: UserPart[];
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

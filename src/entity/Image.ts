@@ -27,6 +27,9 @@ export class Image {
   @ManyToOne(() => Album, (album: Album) => album.images)
   album: Album;
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

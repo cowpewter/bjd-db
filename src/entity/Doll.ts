@@ -77,6 +77,9 @@ export class Doll {
   @ManyToMany(() => Album)
   albums: Album[];
 
+  @Column({ nullable: true, default: null })
+  deleteTimestamp: Date;
+
   @CreateDateColumn()
   createTimestamp: Date;
 

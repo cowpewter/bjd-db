@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class SeedSubscriptions1554575977023 implements MigrationInterface {
+export class SeedSubscriptions1555189554510 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query('INSERT INTO subscription_tag (name) VALUES ("security")');
