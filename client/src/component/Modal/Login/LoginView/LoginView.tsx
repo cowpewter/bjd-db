@@ -2,7 +2,7 @@ import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import React, { SyntheticEvent } from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
 import { Me } from '@store/type/Me';
@@ -23,7 +23,7 @@ interface LoginViewState {
   errorMsgs: string[];
 }
 
-class LoginView extends React.Component<LoginViewProps, LoginViewState> {
+class LoginView extends Component<LoginViewProps, LoginViewState> {
   state: LoginViewState = {
     loading: false,
     errorMsgs: [],

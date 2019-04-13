@@ -4,19 +4,28 @@ query userProfile($username: String!) {
     username
     emailAddress
     description
-    profileImage {
+    socialLinks {
+      id
       url
+      service
+    }
+    profileImage {
+      id
       thumbnail
     }
     dolls {
+      id
       name
       profileImage {
+        id
         thumbnail
       }
     }
     albums {
+      id
       name
       images {
+        id
         thumbnail
       }
     }

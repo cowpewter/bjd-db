@@ -46,7 +46,7 @@ const lessOptions = {
   modifyVars: {
     'white': '#FFFFFF',
     'primary-color': '#4ECDC4',
-    'link-color': '#4ECDC4',
+    'link-color': '#2B706B', //'#4ECDC4',
     'success-color': '#9BFC92', //'#52c41a',
     'warning-color': '#FFE66D', //'#efb649',
     'error-color': '#BF393D', //'#f03d51',
@@ -58,7 +58,7 @@ const lessOptions = {
     'border-radius-base': '4px',
     'border-color-base': '#4ECDC4',
     'box-shadow-base': '0 2px 8px rgba(0, 0, 0, .15)',
-    'body-background': '#4ECDC4',
+    'body-background': '#AEE8E4', //'#4ECDC4',
     'component-background': '#FCEAEA',
     'component-background-alt': '#CFE8EF', //'#F7FFF7',
     'modal-mask-bg': 'fade(@white, 65%)',

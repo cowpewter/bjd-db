@@ -1,0 +1,7 @@
+mutation addSocialMediaLink($service: String!, $url: String!, $ownerId: ID!, $ownerType: String!) {
+  addSocialMediaLink(service: $service, url: $url, ownerId: $ownerId, ownerType: $ownerType) {
+    id
+    service
+    url
+  }
+}

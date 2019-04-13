@@ -2,12 +2,13 @@ import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import MarkdownEditor from '@component/shared/MarkdownEditor';
 import MarkdownRender from '@component/shared/MarkdownRender';
+import SocialLinks from '@component/shared/SocialLinks';
 import ThumbnailImg from '@component/shared/ThumbnailImg';
 import { SaveUserDescriptionOutput } from '@store/query/SaveUserDescription';
 import { UserProfile } from '@store/type/UserProfile';
-import { OperationVariables } from 'apollo-boost';
+import { OperationVariables, PureQueryOptions } from 'apollo-boost';
 import { GraphQLError } from 'graphql';
-import React, { Fragment } from 'react';
+import React, { Component, createRef, Fragment } from 'react';
 import { MutationFn } from 'react-apollo';
 
 const style = require('./UserProfileView.m.less');
@@ -16,6 +17,7 @@ interface UserProfileViewProps {
   user: UserProfile;
   isCurrentUser: boolean;
   saveUserDescription: MutationFn<SaveUserDescriptionOutput, OperationVariables>;
+  refetch: PureQueryOptions[];
 }
 
 interface UserProfileViewState {
@@ -24,7 +26,9 @@ interface UserProfileViewState {
   descriptionErrors: string[];
 }
 
-class UserProfileView extends React.Component<UserProfileViewProps, UserProfileViewState> {
+class UserProfileView extends Component<UserProfileViewProps, UserProfileViewState> {
+  private descriptionRef = createRef<HTMLDivElement>();
+
   state: UserProfileViewState = {
     descriptionEditMode: false,
     savingDescription: false,
@@ -33,6 +37,9 @@ class UserProfileView extends React.Component<UserProfileViewProps, UserProfileV
 
   private handleEdit = () => {
     this.setState({ descriptionEditMode: true });
+    if (this.descriptionRef.current) {
+      window.scrollTo(0, this.descriptionRef.current.offsetTop);
+    }
   }
 
   private saveDescription = (newValue: string) => {
@@ -63,7 +70,7 @@ class UserProfileView extends React.Component<UserProfileViewProps, UserProfileV
   }
 
   public render() {
-    const { user, isCurrentUser } = this.props;
+    const { user, isCurrentUser, refetch } = this.props;
     const { descriptionEditMode, savingDescription, descriptionErrors } = this.state;
     const avatar = (user.profileImage && user.profileImage.thumbnail) ||
       '/siteImages/default-avatar-REPLACE_ME.png';
@@ -73,9 +80,16 @@ class UserProfileView extends React.Component<UserProfileViewProps, UserProfileV
           <ThumbnailImg src={avatar} alt={`Profile Image for ${user.username}`} />
           <div className={style.info}>
             <h1>{user.username}</h1>
+            <SocialLinks
+              links={user.socialLinks}
+              id={user.id}
+              type="user"
+              isEditable={isCurrentUser}
+              refetch={refetch}
+            />
           </div>
         </section>
-        <section>
+        <section ref={this.descriptionRef}>
           <h2>
             About
             {isCurrentUser && (

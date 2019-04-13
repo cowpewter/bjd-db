@@ -1,0 +1,5 @@
+mutation deleteSocialMediaLink($id: ID!) {
+  deleteSocialMediaLink(id: $id) {
+    success
+  }
+}

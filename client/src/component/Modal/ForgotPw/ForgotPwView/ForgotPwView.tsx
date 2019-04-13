@@ -2,7 +2,7 @@ import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import React, { Fragment, SyntheticEvent } from 'react';
+import React, { Component, Fragment, SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
 import { GraphQLError } from 'graphql';
@@ -21,7 +21,7 @@ interface ForgotPwViewState {
   errorMsgs: string[];
 }
 
-class ForgotPwView extends React.Component<ForgotPwViewProps, ForgotPwViewState> {
+class ForgotPwView extends Component<ForgotPwViewProps, ForgotPwViewState> {
   state: ForgotPwViewState = {
     loading: false,
     success: false,

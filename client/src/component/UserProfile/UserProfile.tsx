@@ -52,6 +52,7 @@ const UserProfile: SFC<UserProfileProps> = ({ match }) => {
                         user={userData.userByName}
                         isCurrentUser={meData.me && userData.userByName.id === meData.me.id}
                         saveUserDescription={saveUserDesc}
+                        refetch={[refetchProps]}
                       />
                     )}
                   </SaveUserDescription>

@@ -1,8 +1,7 @@
 import LoadingOverlay from '@component/shared/LoadingOverlay';
 import { Popover } from 'antd';
-import classnames from 'classnames';
 import EasyMDE from 'easymde';
-import React from 'react';
+import React, { Component } from 'react';
 import SimpleMDEReact from 'react-simplemde-editor';
 
 import 'easymde/dist/easymde.min.css';
@@ -154,7 +153,7 @@ const helpPopoverContent = (
   </div>
 );
 
-class MarkdownEditor extends React.Component<MarkdownEditorProps, MarkdownEditorState> {
+class MarkdownEditor extends Component<MarkdownEditorProps, MarkdownEditorState> {
   state = {
     value: this.props.initialValue || '',
     helpVisible: false,

@@ -1,0 +1,7 @@
+mutation editSocialMediaLink($id: ID!, $url: String!) {
+  editSocialMediaLink(id: $id, url: $url) {
+    id
+    service
+    url
+  }
+}

@@ -2,7 +2,7 @@ import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import { Button, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
-import React, { SyntheticEvent } from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
 import { Me } from '@store/type/Me';
@@ -23,7 +23,7 @@ interface SignupViewState {
   errorMsgs: string[];
 }
 
-class SignupView extends React.Component<SignupViewProps, SignupViewState> {
+class SignupView extends Component<SignupViewProps, SignupViewState> {
   state: SignupViewState = {
     loading: false,
     success: false,
