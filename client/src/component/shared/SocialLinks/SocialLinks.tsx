@@ -17,6 +17,8 @@ import { PureQueryOptions } from 'apollo-boost';
 import React, { Component, Fragment } from 'react';
 import FaIcon from '../FaIcon';
 
+const style = require('./SocialLinks.m.less');
+
 interface SocialLinksProps {
   id: string;
   type: 'user' | 'faceupArtist' | 'company';
@@ -76,11 +78,14 @@ class SocialLinks extends Component<SocialLinksProps, SocialLinksState> {
                     {isAdding && (
                       <Fragment>
                         <AddLink id={id} type={type} addLink={addLink} />
-                        <a onClick={this.handleCancelAdd}>I'm done adding links</a>
+                        <a className={style.addLink} onClick={this.handleCancelAdd}>
+                          <FaIcon type="light" icon="ban" />
+                          &nbsp;I'm done adding links
+                        </a>
                       </Fragment>
                     )}
                     {!isAdding && isEditable && (
-                      <a onClick={this.handleAdd}>
+                      <a className={style.addLink} onClick={this.handleAdd}>
                         <FaIcon type="light" icon="plus" />
                         &nbsp;Add a new link
                       </a>

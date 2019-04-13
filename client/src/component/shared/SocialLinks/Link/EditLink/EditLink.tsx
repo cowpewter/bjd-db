@@ -7,6 +7,8 @@ import { GraphQLError } from 'graphql';
 import React, { Component, SyntheticEvent } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
+const style = require('./EditLink.m.less');
+
 interface EditLinkProps {
   link: SocialLink;
   editLink: MutationFn<any, OperationVariables>;
@@ -41,8 +43,10 @@ class EditLink extends Component<EditLinkProps, EditLinkState> {
         this.props.editLink({ variables:  { id: link.id, url: values.url } })
           .then(() => {
             this.setState({ isSaving: false });
+            this.props.cancelEdit();
           })
           .catch((error) => {
+            console.warn(error);
             const errorMsgs: Error[] = [];
             if (error.graphQLErrors) {
               error.graphQLErrors.forEach((error: GraphQLError) => {
@@ -76,24 +80,26 @@ class EditLink extends Component<EditLinkProps, EditLinkState> {
     const icon = React.createElement(details.iconComponent, details.iconData);
 
     return (
-      <Form layout="inline" onSubmit={this.handleSubmit}>
-        <Form.Item>
-          {getFieldDecorator('url', {
-            rules: [{ validator: SocialLinkHelpers.validateUrl }],
-            initialValue: link.url,
-          })(
-            <Input name="url" prefix={icon} disabled={isSaving} />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          <Button onClick={cancelEdit} disabled={isSaving}>
-            <FaIcon icon="times" type="light" />
-          </Button>
-          <Button onClick={this.handleSubmit} disabled={isSaving} type="primary">
-            <FaIcon icon="save" type="light" />
-          </Button>
-        </Form.Item>
-      </Form>
+      <div className={style.root}>
+        <Form layout="inline" onSubmit={this.handleSubmit}>
+          <Form.Item>
+            {getFieldDecorator('url', {
+              rules: [{ validator: SocialLinkHelpers.validateUrl }],
+              initialValue: link.url,
+            })(
+              <Input name="url" prefix={icon} disabled={isSaving} />,
+            )}
+          </Form.Item>
+          <Form.Item>
+            <a className={style.options} onClick={cancelEdit}>
+              <FaIcon icon="ban" type="light" /> cancel
+            </a>
+            <a className={style.options} onClick={this.handleSubmit}>
+              <FaIcon icon="save" type="light" /> save
+            </a>
+          </Form.Item>
+        </Form>
+      </div>
     );
   }
 }

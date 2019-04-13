@@ -8,6 +8,8 @@ import { MutationFn, OperationVariables } from 'react-apollo';
 
 const { Option } = Select;
 
+const style = require('./AddLink.m.less');
+
 interface AddLinkProps {
   id: string;
   type: 'user' | 'faceupArtist' | 'company';
@@ -53,6 +55,7 @@ class AddLink extends Component<AddLinkProps, AddLinkState> {
             });
           })
           .catch((error) => {
+            console.warn(error);
             const errorMsgs: Error[] = [];
             if (error.graphQLErrors) {
               error.graphQLErrors.forEach((error: GraphQLError) => {
@@ -79,9 +82,10 @@ class AddLink extends Component<AddLinkProps, AddLinkState> {
     const serviceSelectOptions = Object.keys(serviceLookup)
       .map((service) => {
         const details = serviceLookup[service];
+        const icon = React.createElement(details.iconComponent, details.iconData);
         return (
           <Option value={service} key={service}>
-            {details.label}
+            {icon} {details.label}
           </Option>
         );
       });
@@ -95,21 +99,23 @@ class AddLink extends Component<AddLinkProps, AddLinkState> {
     );
 
     return (
-      <Form layout="inline" onSubmit={this.handleSubmit}>
-        <Form.Item>
-          {getFieldDecorator('url', {
-            rules: [{ validator: SocialLinkHelpers.validateUrl }],
-            validateTrigger: 'onBlur',
-          })(
-            <Input addonBefore={serviceSelector} name="url" disabled={isSaving} />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          <Button onClick={this.handleSubmit} disabled={isSaving} type="primary">
-            <FaIcon icon="save" type="light" />
-          </Button>
-        </Form.Item>
-      </Form>
+      <div className={style.root}>
+        <Form layout="inline" onSubmit={this.handleSubmit}>
+          <Form.Item>
+            {getFieldDecorator('url', {
+              rules: [{ validator: SocialLinkHelpers.validateUrl }],
+              validateTrigger: 'onBlur',
+            })(
+              <Input addonBefore={serviceSelector} name="url" disabled={isSaving} />,
+            )}
+          </Form.Item>
+          <Form.Item>
+            <a className={style.options} onClick={this.handleSubmit} type="primary">
+              <FaIcon icon="save" type="light" /> save
+            </a>
+          </Form.Item>
+        </Form>
+      </div>
     );
   }
 }

@@ -13,11 +13,11 @@ const MarkdownRender: SFC<MarkdownProps> = ({ markdown, maxHeight, maxWidth, cla
   const style: CSSProperties = {};
   if (maxHeight) {
     style.maxHeight = `${maxHeight}px`;
-    style.overflowY = 'scroll';
+    style.overflowY = 'auto';
   }
-  if (maxHeight) {
+  if (maxWidth) {
     style.maxWidth = `${maxWidth}px`;
-    style.overflowX = 'scroll';
+    style.overflowX = 'auto';
   }
   return (
     <div

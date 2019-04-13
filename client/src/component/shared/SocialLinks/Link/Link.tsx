@@ -7,6 +7,8 @@ import { GraphQLError } from 'graphql';
 import React, { Component } from 'react';
 import { MutationFn, OperationVariables } from 'react-apollo';
 
+const style = require('./Link.m.less');
+
 interface LinkProps {
   link: SocialLink;
   isEditable?: boolean;
@@ -39,6 +41,7 @@ class Link extends Component<LinkProps, LinkState> {
         this.setState({ isSaving: false });
       })
       .catch((error) => {
+        console.warn(error);
         const errorMsgs: Error[] = [];
         if (error.graphQLErrors) {
           error.graphQLErrors.forEach((error: GraphQLError) => {
@@ -88,21 +91,25 @@ class Link extends Component<LinkProps, LinkState> {
 
     const label = details.useUrlForLabel ? link.url.replace(/^http(s?):\/\//, '') : details.label;
     return (
-      <div onMouseEnter={this.handleMouseIn} onMouseLeave={this.handleMouseOut}>
-        <span>
+      <div
+        className={style.root}
+        onMouseEnter={this.handleMouseIn}
+        onMouseLeave={this.handleMouseOut}
+      >
+        <span className={style.link}>
           {icon} <a href={link.url} target="_blank">{label}</a>
           {!!deleteErrors.length && (
             <span className="error">{deleteErrors.map(e => e.message).join(', ')}</span>
           )}
         </span>
-        {isEditable && isHovering && (
+        {isEditable && isHovering && !isSaving && (
           <div>
-            <Button onClick={this.handleEdit} type="primary" disabled={isSaving}>
-              <FaIcon icon="edit" type="light" />
-            </Button>
-            <Button onClick={this.handleDelete} disabled={isSaving}>
-              <FaIcon icon="trash-alt" type="light" />
-            </Button>
+            <a className={style.options} onClick={this.handleEdit} type="primary">
+              <FaIcon icon="edit" type="light" /> edit
+            </a>
+            <a className={style.options} onClick={this.handleDelete}>
+              <FaIcon icon="trash-alt" type="light" /> delete
+            </a>
           </div>
         )}
       </div>

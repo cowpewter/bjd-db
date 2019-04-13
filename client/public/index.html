@@ -15,6 +15,11 @@
     <script defer src="/fontawesome/js/light.min.js"></script>
     <script defer src="/fontawesome/js/fontawesome.min.js"></script>
 
+    <script>
+      // Fix for Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+      FontAwesomeConfig = { autoReplaceSvg: 'nest' }
+    </script>
+
     <link rel="stylesheet" href="/icomoon/style.css">
 
     <meta name="theme-color" content="#000000" />
