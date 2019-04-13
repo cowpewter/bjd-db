@@ -7,7 +7,7 @@ module.exports = {
    host,
    port,
    database,
-   type: 'mysql',
+   type: 'mariadb',
    logging: false, //process.env.ENVIRONMENT !== 'prod',
    entities: [
        'build/entity/**/*.js',

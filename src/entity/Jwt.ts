@@ -24,7 +24,6 @@ export class Jwt {
   @Column({ default: false })
   revoked: boolean;
 
-  @Index()
   @ManyToOne(() => User, (user: User) => user.jwts)
   user: User;
 

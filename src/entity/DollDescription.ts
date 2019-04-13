@@ -15,7 +15,7 @@ export class DollDescription {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'text', default: '' })
+  @Column({ type: 'text' })
   description: string;
 
   @OneToOne(() => Doll, (doll: Doll) => doll.description)

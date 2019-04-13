@@ -15,7 +15,7 @@ export class UserDescription {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'text', default: '' })
+  @Column({ type: 'text' })
   description: string;
 
   @OneToOne(() => User, (user: User) => user.description)
