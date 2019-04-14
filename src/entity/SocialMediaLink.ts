@@ -1,10 +1,8 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './Company';
 import { FaceupArtist } from './FaceupArtist';
@@ -34,10 +32,15 @@ export class SocialMediaLink {
   @ManyToOne(() => Company, (company: Company) => company.socialLinks)
   company: Company;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }
 

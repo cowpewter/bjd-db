@@ -1,11 +1,9 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   Index,
   ManyToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 import { EmailAddress } from './EmailAddress';
@@ -25,9 +23,14 @@ export class SubscriptionTag {
   @ManyToMany(() => EmailAddress)
   emailAddresses: EmailAddress[];
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }

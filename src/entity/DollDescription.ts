@@ -1,10 +1,8 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 import { Doll } from './Doll';
@@ -21,9 +19,14 @@ export class DollDescription {
   @OneToOne(() => Doll, (doll: Doll) => doll.description)
   doll: Doll;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }

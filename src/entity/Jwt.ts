@@ -2,12 +2,10 @@
 
 import {
   Column,
-  CreateDateColumn,
   Entity,
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
 
@@ -28,9 +26,14 @@ export class Jwt {
   user: User;
 
   @Index()
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }

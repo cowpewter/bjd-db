@@ -1,11 +1,9 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 import { User } from './User';
@@ -20,16 +18,16 @@ export class Purchase {
   @Column()
   name: string;
 
-  @Column({ nullable: true, default: null })
+  @Column('timestamp', { nullable: true })
   purchaseDate: Date;
 
-  @Column({ nullable: true, default: null })
+  @Column('timestamp', { nullable: true })
   arrivalDate: Date;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   purchasePrice: number; // in cents
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   shippingPrice: number; // in cents
 
   @ManyToOne(() => User, (user: User) => user.purchases)
@@ -38,12 +36,17 @@ export class Purchase {
   @OneToMany(() => UserPart, (part: UserPart) => part.purchase)
   parts: UserPart[];
 
-  @Column({ nullable: true, default: null })
+  @Column('timestamp', { nullable: true })
   deleteTimestamp: Date;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }

@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToMany,
@@ -8,14 +7,12 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
 import { Album } from './Album';
 import { Comment } from './Comment';
 import { DollConfiguration } from './DollConfiguration';
 import { DollDescription } from './DollDescription';
-import { DollHistory } from './DollHistory';
 import { DollWishlist } from './DollWishlist';
 import { Image } from './Image';
 import { User } from './User';
@@ -64,10 +61,6 @@ export class Doll {
   @JoinColumn()
   description: DollDescription;
 
-  @OneToOne(() => DollHistory, (history: DollHistory) => history.doll)
-  @JoinColumn()
-  history: DollHistory;
-
   @OneToMany(() => DollConfiguration, (config: DollConfiguration) => config.doll)
   configurations: DollConfiguration[];
 
@@ -77,12 +70,17 @@ export class Doll {
   @ManyToMany(() => Album)
   albums: Album[];
 
-  @Column({ nullable: true, default: null })
+  @Column('timestamp', { nullable: true })
   deleteTimestamp: Date;
 
-  @CreateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createTimestamp: Date;
 
-  @UpdateDateColumn()
+  @Column('timestamp', {
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateTimestamp: Date;
 }
