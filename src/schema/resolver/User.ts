@@ -104,24 +104,24 @@ const resolver = {
 
     dolls: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?
-        { parent } :
-        { parent, isPrivate: false };
+        { user: parent } :
+        { user: parent, isPrivate: false };
       return getRepository(Doll)
           .find({ where });
     },
 
     dollWishlists: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?
-        { parent } :
-        { parent, isPrivate: false };
+        { user: parent } :
+        { user: parent, isPrivate: false };
       return getRepository(DollWishlist)
           .find({ where });
     },
 
     albums: (parent: User, _: any, ctx: GQLContext) => {
       const where = ctx.koaCtx.user.id === parent.id ?
-        { parent } :
-        { parent, isPrivate: false };
+        { user: parent } :
+        { user: parent, isPrivate: false };
       return getRepository(Album)
           .find({ where });
     },
