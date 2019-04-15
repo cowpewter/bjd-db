@@ -1,10 +1,13 @@
 import { AuthenticationError, UserInputError } from 'apollo-server';
 
 import { Album } from '@entity/Album';
+import { CreateBan } from '@entity/CreateBan';
 import { Doll } from '@entity/Doll';
 import { DollWishlist } from '@entity/DollWishlist';
+import { EditBan } from '@entity/EditBan';
 import { EmailAddress } from '@entity/EmailAddress';
 import { Image } from '@entity/Image';
+import { Like } from '@entity/Like';
 import { Purchase } from '@entity/Purchase';
 import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
@@ -103,7 +106,8 @@ const resolver = {
     },
 
     dolls: (parent: User, _: any, ctx: GQLContext) => {
-      const where = ctx.koaCtx.user.id === parent.id ?
+      const { id: userId } = ctx.koaCtx.user;
+      const where = userId === parent.id ?
         { user: parent } :
         { user: parent, isPrivate: false };
       return getRepository(Doll)
@@ -111,7 +115,8 @@ const resolver = {
     },
 
     dollWishlists: (parent: User, _: any, ctx: GQLContext) => {
-      const where = ctx.koaCtx.user.id === parent.id ?
+      const { id: userId } = ctx.koaCtx.user;
+      const where = userId === parent.id ?
         { user: parent } :
         { user: parent, isPrivate: false };
       return getRepository(DollWishlist)
@@ -119,7 +124,8 @@ const resolver = {
     },
 
     albums: (parent: User, _: any, ctx: GQLContext) => {
-      const where = ctx.koaCtx.user.id === parent.id ?
+      const { id: userId } = ctx.koaCtx.user;
+      const where = userId === parent.id ?
         { user: parent } :
         { user: parent, isPrivate: false };
       return getRepository(Album)
@@ -127,7 +133,8 @@ const resolver = {
     },
 
     purchases: (parent: User, _: any, ctx: GQLContext) => {
-      if (ctx.koaCtx.user.id !== parent.id) {
+      const { id: userId } = ctx.koaCtx.user;
+      if (userId !== parent.id) {
         return null;
       }
       return getRepository(Purchase)
@@ -145,7 +152,8 @@ const resolver = {
         null,
 
     subscriptions: async (parent: User, _: any, ctx: GQLContext) => {
-      if (ctx.koaCtx.user.id !== parent.id) {
+      const { id: userId } = ctx.koaCtx.user;
+      if (userId !== parent.id) {
         return null;
       }
       // @todo how the hell do i convert this to typeorm?
@@ -171,13 +179,46 @@ const resolver = {
         albumComment: !!subByName['albumComment'],
       };
     },
+
+    comments: (parent: User) =>
+      getRepository(Comment)
+        .find({ where: { author: parent } }),
+
+    likes: (parent: User) =>
+      getRepository(Like)
+        .find({ where: { author: parent } }),
+
+    createBan: async (parent: User, _: any, ctx: GQLContext) => {
+      const { id: userId } = ctx.koaCtx.user;
+      const user = await getRepository(User)
+        .findOne(userId);
+
+      if ((!user || !user.isMod || !user.isAdmin) && userId !== parent.id) {
+        throw new AuthenticationError('Only moderators can see this field');
+      }
+      return getRepository(CreateBan)
+        .findOne({ where: { user: parent } });
+    },
+
+    editBan: async (parent: User, _: any, ctx: GQLContext) => {
+      const { id: userId } = ctx.koaCtx.user;
+      const user = await getRepository(User)
+        .findOne(userId);
+
+      if ((!user || !user.isMod || !user.isAdmin) && userId !== parent.id) {
+        throw new AuthenticationError('Only moderators can see this field');
+      }
+      return getRepository(EditBan)
+        .findOne({ where: { user: parent } });
+    },
   },
 
   Query: {
     me: async (_: any, __: any, ctx: GQLContext) => {
-      if (ctx.koaCtx.user.id !== '0') {
+      const { id: userId } = ctx.koaCtx.user;
+      if (userId !== '0') {
         return getRepository(User)
-          .findOne({ id: ctx.koaCtx.user.id });
+          .findOne({ id: userId });
       }
       return null;
     },
@@ -254,8 +295,9 @@ const resolver = {
     },
 
     changePassword: async (_: any, args: ChangePasswordArgs, ctx: GQLContext) => {
+      const { id: userId } = ctx.koaCtx.user;
       const user = await getRepository(User)
-        .findOne(ctx.koaCtx.user.id);
+        .findOne(userId);
       if (!user) {
         throw new AuthenticationError('You must be logged in');
       }
@@ -319,10 +361,11 @@ const resolver = {
     },
 
     saveUserDescription: async (_: any, args: DescriptionArgs, ctx: GQLContext) => {
-      if (!ctx.koaCtx.user.id) {
+      const { id: userId } = ctx.koaCtx.user;
+      if (userId === '0') {
         throw new AuthenticationError('You must be logged in');
       }
-      if (args.id !== ctx.koaCtx.user.id) {
+      if (args.id !== userId) {
         throw new UserInputError('You can only edit your own profile');
       }
       const user = await getRepository(User)

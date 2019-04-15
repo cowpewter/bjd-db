@@ -2,6 +2,8 @@ type SocialMediaLink {
   id: ID!
   service: String!
   url: String!
+  addedBy: User
+  vetted: Boolean!
 }
 
 extend type Mutation {

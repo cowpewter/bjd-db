@@ -1,6 +1,7 @@
 import { Album } from '@entity/Album';
 import { Comment } from '@entity/Comment';
 import { Image } from '@entity/Image';
+import { Like } from '@entity/Like';
 import { User } from '@entity/User';
 import { IdArgs } from '@schema/args';
 import { getRepository } from 'typeorm';
@@ -17,6 +18,10 @@ const resolver = {
 
     comments: (parent: Album) =>
       getRepository(Comment)
+        .find({ where: { album: parent } }),
+
+    likes: (parent: Album) =>
+      getRepository(Like)
         .find({ where: { album: parent } }),
   },
   Query: {

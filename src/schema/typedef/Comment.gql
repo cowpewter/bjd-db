@@ -1,7 +1,8 @@
 type Comment {
   id: ID!
   content: String!
-  user: User
+  author: User
   source: CommentSource
   replies: [Comment!]
+  likes: [Like!]
 }

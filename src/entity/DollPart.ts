@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { Company } from './Company';
+import { User } from './User';
 import { UserPart } from './UserPart';
 
 export type DollPartType = 'head' | 'body' | 'upperBody' | 'lowerBody' |
@@ -29,6 +30,12 @@ export class DollPart {
 
   @ManyToOne(() => Company, (company: Company) => company.parts, { nullable: false })
   company: Company;
+
+  @ManyToOne(() => User, (user: User) => user.addedDollParts)
+  addedBy: User;
+
+  @Column({ default: false })
+  vetted: Boolean;
 
   @OneToMany(() => UserPart, (userPart: UserPart) => userPart.part)
   userParts: UserPart[];

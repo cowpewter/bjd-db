@@ -12,12 +12,20 @@ import {
 
 import { Album } from './Album';
 import { Comment } from './Comment';
+import { Company } from './Company';
+import { CreateBan } from './CreateBan';
 import { Doll } from './Doll';
+import { DollPart } from './DollPart';
 import { DollWishlist } from './DollWishlist';
+import { EditBan } from './EditBan';
 import { EmailAddress } from './EmailAddress';
+import { FaceupArtist } from './FaceupArtist';
 import { Image } from './Image';
 import { Jwt } from './Jwt';
+import { Like } from './Like';
+import { Notification } from './Notification';
 import { Purchase } from './Purchase';
+import { ResinColor } from './ResinColor';
 import { SocialMediaLink } from './SocialMediaLink';
 import { UserDescription } from './UserDescription';
 import { UserPart } from './UserPart';
@@ -71,14 +79,44 @@ export class User {
   @OneToMany(() => Purchase, (purchase: Purchase) => purchase.user)
   purchases: Purchase[];
 
-  @OneToMany(() => Comment, (comment: Comment) => comment.user)
+  @OneToMany(() => Comment, (comment: Comment) => comment.author)
   userComments: Comment[];
+
+  @OneToMany(() => Like, (like: Like) => like.author)
+  userLikes: Like[];
 
   @OneToMany(() => Image, (image: Image) => image.user)
   images: Image;
 
+  @OneToMany(() => Notification, (notif: Notification) => notif.user)
+  notifications: Notification[];
+
   @OneToMany(() => Jwt, (jwt: Jwt) => jwt.user)
   jwts: Jwt[];
+
+  @OneToOne(() => EditBan, (ban: EditBan) => ban.user)
+  editBan: EditBan;
+
+  @OneToOne(() => CreateBan, (ban: CreateBan) => ban.user)
+  createBan: CreateBan;
+
+  @OneToMany(() => Company, (company: Company) => company.addedBy)
+  addedCompanies: Company[];
+
+  @OneToMany(() => DollPart, (part: DollPart) => part.addedBy)
+  addedDollParts: DollPart[];
+
+  @OneToMany(() => FaceupArtist, (artist: FaceupArtist) => artist.addedBy)
+  addedFaceupArtists: FaceupArtist[];
+
+  @OneToMany(() => ResinColor, (color: ResinColor) => color.addedBy)
+  addedResinColors: ResinColor[];
+
+  @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.addedBy)
+  addedSocialMediaLinks: SocialMediaLink[];
+
+  @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.deletedBy)
+  deletedSocialMediaLinks: SocialMediaLink;
 
   @Column('timestamp', {
     default: () => 'CURRENT_TIMESTAMP',

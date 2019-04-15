@@ -1,21 +1,23 @@
 import { Album } from '@entity/Album';
 import { Comment } from '@entity/Comment';
+import { Company } from '@entity/Company';
 import { Doll } from '@entity/Doll';
+import { FaceupArtist } from '@entity/FaceupArtist';
 import { Like } from '@entity/Like';
 import { User } from '@entity/User';
 import { getManager, getRepository } from 'typeorm';
 
 const resolver = {
-  Comment: {
-    author: (parent: Comment) =>
+  Like: {
+    user: (parent: Like) =>
       getRepository(User)
-        .find({ where: { comment: parent } }),
+        .find({ where: { userLikes: parent } }),
 
-    source: async (parent: Comment) => {
+    source: async (parent: Like) => {
       // @fixme is there a better way to do this in Typeorm?
       const query = await getManager().query(
-        `SELECT albumId, dollId, commentId
-          FROM comment
+        `SELECT albumId, commentId, companyId, dollId, faceupArtistId
+          FROM like
           WHERE id = ?
         `,
         [parent.id],
@@ -32,22 +34,20 @@ const resolver = {
         return getRepository(Comment)
           .findOne(rawComment.commentId);
       }
+      if (rawComment.companyId) {
+        return getRepository(Company)
+          .findOne(rawComment.companyId);
+      }
       if (rawComment.dollId) {
         return getRepository(Doll)
           .findOne(rawComment.dollId);
       }
+      if (rawComment.faceupArtistId) {
+        return getRepository(FaceupArtist)
+          .findOne(rawComment.faceupArtistId);
+      }
       return null;
     },
-
-    replies: async (parent: Comment) =>
-      getRepository(Comment)
-        .createQueryBuilder('comment')
-        .where('comment.commentId = :id', { id: parent.id })
-        .getMany(),
-
-    likes: (parent: Comment) =>
-      getRepository(Like)
-        .find({ where: { comment: parent } }),
   },
 };
 

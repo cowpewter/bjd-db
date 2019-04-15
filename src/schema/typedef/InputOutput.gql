@@ -5,3 +5,5 @@ type SuccessOutput {
 scalar IsoDate
 
 scalar UsDollar
+
+scalar Json

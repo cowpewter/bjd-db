@@ -1,1 +1,1 @@
-union CommentSource = Comment | Album | Doll
+union CommentSource = Album | Comment | Doll

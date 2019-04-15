@@ -9,6 +9,9 @@ import DollWishlist from '@schema/resolver/DollWishlist';
 import FaceupArtist from '@schema/resolver/FaceupArtist';
 import Image from '@schema/resolver/Image';
 import IsoDate from '@schema/resolver/IsoDate';
+import Json from '@schema/resolver/Json';
+import Like from '@schema/resolver/Like';
+import LikeSource from '@schema/resolver/LikeSource';
 import Mutation from '@schema/resolver/Mutation';
 import Query from '@schema/resolver/Query';
 import ResinColor from '@schema/resolver/ResinColor';
@@ -29,6 +32,9 @@ const resolvers = [
   FaceupArtist,
   Image,
   IsoDate,
+  Json,
+  Like,
+  LikeSource,
   Mutation,
   Query,
   ResinColor,

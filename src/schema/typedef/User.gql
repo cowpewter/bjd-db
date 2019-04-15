@@ -29,4 +29,8 @@ type User {
   isAdmin: Boolean
   isMod: Boolean
   subscriptions: Subscriptions
+  comments: [Comment!]
+  likes: [Like!]
+  editBan: EditBan
+  createBan: CreateBan
 }

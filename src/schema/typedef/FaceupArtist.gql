@@ -7,4 +7,7 @@ type FaceupArtist {
   name: String!
   country: String
   socialLinks: [SocialMediaLink!]
+  addedBy: User
+  vetted: Boolean!
+  likes: [Like!]
 }

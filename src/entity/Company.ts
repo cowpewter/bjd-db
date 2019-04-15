@@ -1,13 +1,16 @@
 import {
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { DollPart } from './DollPart';
+import { Like } from './Like';
 import { ResinColor } from './ResinColor';
 import { SocialMediaLink } from './SocialMediaLink';
+import { User } from './User';
 
 @Entity()
 export class Company {
@@ -21,6 +24,12 @@ export class Company {
   @Column({ length: 2, nullable: true })
   country: string; // ISO Country code
 
+  @ManyToOne(() => User, (user: User) => user.addedCompanies)
+  addedBy: User;
+
+  @Column({ default: false })
+  vetted: Boolean;
+
   @OneToMany(() => SocialMediaLink, (link: SocialMediaLink) => link.company)
   socialLinks: SocialMediaLink[];
 
@@ -29,6 +38,9 @@ export class Company {
 
   @OneToMany(() => ResinColor, (color: ResinColor) => color.company)
   resinColors: ResinColor[];
+
+  @OneToMany(() => Like, (like: Like) => like.company)
+  likes: Like[];
 
   @Column('timestamp', {
     default: () => 'CURRENT_TIMESTAMP',

@@ -1,0 +1,5 @@
+type CreateBan {
+  id: ID!
+  reason: String!
+  user: User
+}

@@ -3,4 +3,6 @@ type DollPart {
   type: String!
   name: String!
   company: Company
+  addedBy: User
+  vetted: Boolean!
 }

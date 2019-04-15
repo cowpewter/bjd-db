@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Company } from './Company';
+import { User } from './User';
 import { UserPart } from './UserPart';
 
 export type ResinColorType = 'white' | 'light' | 'tan' | 'dark' | 'black' |
@@ -30,6 +31,12 @@ export class ResinColor {
 
   @ManyToOne(() => Company, (company: Company) => company.resinColors)
   company: Company;
+
+  @ManyToOne(() => User, (user: User) => user.addedResinColors)
+  addedBy: User;
+
+  @Column({ default: false })
+  vetted: Boolean;
 
   @OneToMany(() => UserPart, (part: UserPart) => part.resinColor)
   parts: UserPart[];

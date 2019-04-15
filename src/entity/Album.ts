@@ -11,6 +11,7 @@ import {
 import { Comment } from './Comment';
 import { Doll } from './Doll';
 import { Image } from './Image';
+import { Like } from './Like';
 import { User } from './User';
 
 @Entity()
@@ -36,6 +37,9 @@ export class Album {
 
   @OneToMany(() => Comment, (comment: Comment) => comment.album)
   comments: Comment[];
+
+  @OneToMany(() => Like, (like: Like) => like.album)
+  likes: Like[];
 
   @ManyToMany(() => Doll)
   @JoinTable()

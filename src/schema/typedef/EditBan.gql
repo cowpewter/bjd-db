@@ -1,0 +1,5 @@
+type EditBan {
+  id: ID!
+  reason: String!
+  user: User
+}

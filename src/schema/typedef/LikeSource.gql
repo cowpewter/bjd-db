@@ -1,0 +1,1 @@
+union LikeSource = Album | Comment | Company | Doll | FaceupArtist

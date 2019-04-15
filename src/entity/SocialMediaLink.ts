@@ -23,6 +23,12 @@ export class SocialMediaLink {
   @Column({ type: 'varchar' })
   service: SocialMediaLinkService;
 
+  @ManyToOne(() => User, (user: User) => user.addedSocialMediaLinks)
+  addedBy: User;
+
+  @Column({ default: false })
+  vetted: Boolean;
+
   @ManyToOne(() => User, (user: User) => user.socialLinks)
   user: User;
 
@@ -31,6 +37,12 @@ export class SocialMediaLink {
 
   @ManyToOne(() => Company, (company: Company) => company.socialLinks)
   company: Company;
+
+  @ManyToOne(() => User, (user: User) => user.deletedSocialMediaLinks)
+  deletedBy: User;
+
+  @Column('timestamp', { nullable: true })
+  deleteTimestamp: Date;
 
   @Column('timestamp', {
     default: () => 'CURRENT_TIMESTAMP',

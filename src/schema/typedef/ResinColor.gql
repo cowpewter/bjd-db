@@ -4,4 +4,6 @@ type ResinColor {
   colorType: String!
   type: String!
   company: Company!
+  addedBy: User
+  vetted: Boolean!
 }

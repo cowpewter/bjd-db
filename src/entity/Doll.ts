@@ -15,6 +15,7 @@ import { DollConfiguration } from './DollConfiguration';
 import { DollDescription } from './DollDescription';
 import { DollWishlist } from './DollWishlist';
 import { Image } from './Image';
+import { Like } from './Like';
 import { User } from './User';
 
 export type DollSex = 'Male' | 'Female' | 'Intersex';
@@ -66,6 +67,9 @@ export class Doll {
 
   @OneToMany(() => Comment, (comment: Comment) => comment.doll)
   comments: Comment[];
+
+  @OneToMany(() => Like, (like: Like) => like.doll)
+  likes: Like[];
 
   @ManyToMany(() => Album)
   albums: Album[];

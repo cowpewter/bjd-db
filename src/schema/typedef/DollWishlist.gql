@@ -2,9 +2,14 @@ extend type Query {
   dollWishlist(id: ID!): DollWishlist
 }
 
+extend type Mutation {
+  createDollWishlist(name: String!, isPrivate: Boolean!): DollWishlist
+}
+
 type DollWishlist {
   id: ID!
   name: String!
+  isPrivate: Boolean!
   user: User!
   dolls: [Doll!]
 }
