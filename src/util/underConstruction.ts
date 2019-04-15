@@ -10,7 +10,7 @@ export const underConstructionMiddleware = async (ctx: Koa.Context, next: Functi
 };
 
 const isLiveSite = (referer: string | undefined, host: string | undefined) => {
-  const refererRegex = /^http(s?):\/\/bjd-db\.com($|\/)/;
+  const refererRegex = /^http(s?):\/\/(www\.)?bjd-db\.com($|\/)/;
   const hostRegex = /^bjd-db\.com$/;
   if (!referer) {
     if (!host) {
