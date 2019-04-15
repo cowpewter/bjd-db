@@ -2,4 +2,7 @@ query modalState {
   loginOpen @client
   signupOpen @client
   forgotPwOpen @client
+  createDollWishlistOpen @client
+  createCompanyOpen @client
+  createDollOpen @client
 }

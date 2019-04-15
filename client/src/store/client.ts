@@ -11,6 +11,9 @@ const client = new ApolloClient({
       forgotPwOpen: false,
       loginOpen: false,
       signupOpen: false,
+      createDollWishlistOpen: false,
+      createCompanyOpen: false,
+      createDollOpen: false,
     },
   },
 });

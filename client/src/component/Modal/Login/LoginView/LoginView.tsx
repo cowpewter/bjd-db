@@ -96,6 +96,7 @@ class LoginView extends Component<LoginViewProps, LoginViewState> {
         visible={true}
         width={300}
         onCancel={this.handleCancel}
+        destroyOnClose={true}
         footer={[
           <Button key="cancel" onClick={this.handleCancel}>
             Cancel

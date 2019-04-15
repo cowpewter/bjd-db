@@ -33,7 +33,6 @@ export const serveImagesMiddleware = async (ctx: Koa.Context, next: Function) =>
     key = keySplit.join('.');
     key += `_wm.${ext}`;
   }
-  console.log(key);
 
   const { s3 } = ctx.connections;
   const data = await getFile(s3, key);
@@ -72,7 +71,7 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) =
     ctx.status = 400;
     throw new Error('No files to upload!');
   }
-  const results: {[key: number]: boolean | string} = [];
+  const results: {[key: number]: boolean | { filename: string; id: string; }} = [];
   await asyncForEach(files, async (file, index) => {
     const imageId = uuidv4();
     let fileBuffer = await streamToBuffer(file);
@@ -81,7 +80,7 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) =
     // make sure it's an image
     if (!type || !type.mime.match(/^image/)) {
       results[index] = false;
-      return;
+      throw new Error('Must be an image');
     }
 
     // if jpeg, rotate according to exif data
@@ -91,7 +90,7 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) =
     // rotation failed
     if (!fileBuffer) {
       results[index] = false;
-      return;
+      throw new Error('Error processing image');
     }
 
     // Generate thumbnail and watermarks
@@ -100,15 +99,18 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) =
     const resizedWatermark = await sharp(watermark)
       .resize(Math.round(size.width / 5))
       .toBuffer();
+
     const watermarked = await sharp(fileBuffer)
       .composite([{
         input: resizedWatermark,
         gravity: 'southeast',
       }])
       .toBuffer();
+
     const thumbnail = await sharp(fileBuffer)
       .resize(500)
       .toBuffer();
+
     const waterThumb = await sharp(watermarked)
       .resize(500)
       .toBuffer();
@@ -135,7 +137,7 @@ export const uploadImagesMiddleware = async (ctx: Koa.Context, next: Function) =
     ]);
 
     if (savedImage && success) {
-      results[index] = `/images/${origKey}`;
+      results[index] = { filename: `/images/${origKey}`, id: savedImage.id };
     } else {
       results[index] = false;
     }
@@ -156,7 +158,8 @@ const putFile = (s3: S3, key: string, data: Buffer): Promise<string> => {
       },
       (err) => {
         if (err) {
-          reject(false);
+          console.error(err);
+          reject(new Error('Failed to upload to S3'));
         } else {
           resolve(`/images/${key}`);
         }

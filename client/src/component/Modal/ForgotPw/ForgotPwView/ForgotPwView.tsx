@@ -102,6 +102,7 @@ class ForgotPwView extends Component<ForgotPwViewProps, ForgotPwViewState> {
         width={300}
         onCancel={this.handleCancel}
         footer={footer}
+        destroyOnClose={true}
       >
         {success && (
           <p>An email has been sent to the email address on file.</p>

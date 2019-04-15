@@ -103,7 +103,7 @@ class AddLink extends Component<AddLinkProps, AddLinkState> {
         <Form layout="inline" onSubmit={this.handleSubmit}>
           <Form.Item>
             {getFieldDecorator('url', {
-              rules: [{ validator: SocialLinkHelpers.validateUrl }],
+              rules: [{ validator: SocialLinkHelpers.validateUrl(true) }],
               validateTrigger: 'onBlur',
             })(
               <Input addonBefore={serviceSelector} name="url" disabled={isSaving} />,

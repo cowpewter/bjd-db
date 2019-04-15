@@ -84,7 +84,7 @@ class EditLink extends Component<EditLinkProps, EditLinkState> {
         <Form layout="inline" onSubmit={this.handleSubmit}>
           <Form.Item>
             {getFieldDecorator('url', {
-              rules: [{ validator: SocialLinkHelpers.validateUrl }],
+              rules: [{ validator: SocialLinkHelpers.validateUrl(true) }],
               initialValue: link.url,
             })(
               <Input name="url" prefix={icon} disabled={isSaving} />,

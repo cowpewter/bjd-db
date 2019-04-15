@@ -1,0 +1,6 @@
+mutation createDoll($data: CreateDollInput!) {
+  createDoll(data: $data) {
+    id
+    name
+  }
+}

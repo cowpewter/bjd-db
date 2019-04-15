@@ -18,6 +18,7 @@ interface UserProfileViewProps {
   isCurrentUser: boolean;
   saveUserDescription: MutationFn<SaveUserDescriptionOutput, OperationVariables>;
   refetch: PureQueryOptions[];
+  openCreateDoll: MutationFn<null>;
 }
 
 interface UserProfileViewState {
@@ -67,6 +68,11 @@ class UserProfileView extends Component<UserProfileViewProps, UserProfileViewSta
           });
         }
       });
+  }
+
+  private handleCreateDoll = () => {
+    const { openCreateDoll } = this.props;
+    openCreateDoll();
   }
 
   public render() {
@@ -120,7 +126,15 @@ class UserProfileView extends Component<UserProfileViewProps, UserProfileViewSta
 
         <section className="split">
           <div>
-            <h2>Dolls</h2>
+            <h2>
+              Dolls
+              {isCurrentUser && (
+              <a className="subtitle" onClick={this.handleCreateDoll}>
+                <FaIcon type="light" icon="plus" />
+                add doll
+              </a>
+            )}
+            </h2>
             <div className="subsection">content</div>
           </div>
           <div>

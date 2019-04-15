@@ -71,9 +71,13 @@ const serviceLookup: { [key: string]: Details } = {
   },
 };
 
-const validateUrl = (_: any, value: string, callback: Function) => {
+const validateUrl = (required: boolean) => (_: any, value: string, callback: Function) => {
   if (!value) {
-    callback(new Error('Please enter a url'));
+    if (required) {
+      callback(new Error('Please enter a url'));
+    } else {
+      callback();
+    }
     return;
   }
   const prefix = /^http(s?):\/\//;

@@ -4,7 +4,7 @@ import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
 import { IdArgs } from '@schema/args';
 import { GQLContext } from '@schema/index';
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, UserInputError } from 'apollo-server';
 import { getRepository } from 'typeorm';
 
 interface CreateCompanyArgs {
@@ -52,6 +52,16 @@ const resolver = {
       }
       if (addedBy.createBan) {
         throw new AuthenticationError(`You cannot create companies: ${addedBy.createBan.reason}`);
+      }
+
+      const existing = getRepository(Company)
+        .findOne({ where: { name: args.name } });
+      if (existing) {
+        throw new UserInputError('', {
+          validationErrors: {
+            name: 'A company by that name already exists',
+          },
+        });
       }
 
       const company = new Company();

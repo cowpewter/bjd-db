@@ -12,6 +12,9 @@ import UserProfile from '@component/UserProfile';
 // Modals
 import Modals from '@component/Modal/Modals';
 
+// Logged in user
+import { GQL_ME, MeQuery } from '@store/query/Me';
+
 const App: SFC = () => {
   return (
     <ApolloProvider client={client}>
@@ -20,7 +23,19 @@ const App: SFC = () => {
           <Route path="/user/:username" exact component={UserProfile} />
       </Router>
 
-      <Modals />
+      <MeQuery query={GQL_ME}>
+        {({ loading, error, data }) => {
+          if (loading) {
+            return null;
+          }
+          if (error || !data) {
+            console.error(error);
+            return null;
+          }
+          const { me } = data;
+          return <Modals user={me} />;
+        }}
+      </MeQuery>
     </ApolloProvider>
   );
 };

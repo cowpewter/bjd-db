@@ -1,0 +1,7 @@
+mutation createDollWishlist($name: String!, $isPrivate: Boolean!) {
+  createDollWishlist(name: $name, isPrivate: $isPrivate) {
+    id
+    name
+    isPrivate
+  }
+}

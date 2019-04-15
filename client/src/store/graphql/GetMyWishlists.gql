@@ -1,0 +1,10 @@
+query myWishlists {
+  me {
+    id
+    dollWishlists {
+      id
+      name
+      isPrivate
+    }
+  }
+}

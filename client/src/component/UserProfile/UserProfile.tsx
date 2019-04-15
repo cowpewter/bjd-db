@@ -6,6 +6,7 @@ import Page from '@component/Page';
 import { PureQueryOptions } from 'apollo-boost';
 
 import { GQL_ME, MeQuery } from '@store/query/Me';
+import { GQL_OPEN_CREATE_DOLL_MODAL, OpenCreateDollModalMutation } from '@store/query/ModalState';
 import { GQL_SAVE_USER_DESC, SaveUserDescription } from '@store/query/SaveUserDescription';
 import { GQL_USER_PROFILE, UserProfileQuery } from '@store/query/UserProfile';
 
@@ -48,12 +49,17 @@ const UserProfile: SFC<UserProfileProps> = ({ match }) => {
                     refetchQueries={[refetchProps]}
                   >
                     {saveUserDesc => (
-                      <UserProfileView
-                        user={userData.userByName}
-                        isCurrentUser={meData.me && userData.userByName.id === meData.me.id}
-                        saveUserDescription={saveUserDesc}
-                        refetch={[refetchProps]}
-                      />
+                      <OpenCreateDollModalMutation mutation={GQL_OPEN_CREATE_DOLL_MODAL}>
+                      {openCreateDoll => (
+                        <UserProfileView
+                          user={userData.userByName}
+                          isCurrentUser={meData.me && userData.userByName.id === meData.me.id}
+                          saveUserDescription={saveUserDesc}
+                          refetch={[refetchProps]}
+                          openCreateDoll={openCreateDoll}
+                        />
+                      )}
+                      </OpenCreateDollModalMutation>
                     )}
                   </SaveUserDescription>
                 );

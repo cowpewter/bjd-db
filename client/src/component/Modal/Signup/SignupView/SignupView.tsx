@@ -133,6 +133,7 @@ class SignupView extends Component<SignupViewProps, SignupViewState> {
         width={success ? 500 : 300}
         onCancel={this.handleCancel}
         footer={footer}
+        destroyOnClose={true}
       >
         <Errors errors={errorMsgs} />
 

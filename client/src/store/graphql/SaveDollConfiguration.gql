@@ -1,0 +1,5 @@
+mutation saveDollConfiguration($data: SaveDolLConfigInput!) {
+  saveDollConfiguration(data: $data) {
+    id
+  }
+}
