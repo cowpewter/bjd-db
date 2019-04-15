@@ -1,10 +1,17 @@
 import { Notification } from '@entity/Notification';
+import { User } from '@entity/User';
 import { IdsArgs } from '@schema/args';
 import { GQLContext } from '@schema/index';
 import { UserInputError } from 'apollo-server';
 import { getRepository, In } from 'typeorm';
 
 const resolver = {
+  Notification: {
+    user: (parent: Notification) =>
+      getRepository(User)
+        .findOne({ where: { notification: parent } }),
+  },
+
   Mutation: {
     markNotificationsRead: async (_: any, args: IdsArgs, ctx: GQLContext) => {
       if (args.ids.length === 0) {

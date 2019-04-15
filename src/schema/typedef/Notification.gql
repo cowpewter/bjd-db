@@ -1,5 +1,5 @@
 type Notification {
   user: User!
   type: String!
-  
+  data: Json!
 }
