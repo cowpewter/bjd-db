@@ -7,6 +7,7 @@ import { Connections } from './connection';
 import { serveImagesMiddleware, uploadImagesMiddleware } from './library/image';
 import { jwtSessionMiddleware } from './library/jwt';
 import schema from './schema';
+import { underConstructionMiddleware } from './util/underConstruction';
 
 interface ServerConfig {
   jwtSecret: string;
@@ -20,6 +21,9 @@ class Server {
 
   constructor(config: ServerConfig) {
     const app = new Koa();
+
+    // Returns 'Under Construction' for all requests with a referer of bjd-db.com
+    app.use(underConstructionMiddleware);
 
     // Serve up static files from client dir
     const clientBuildDir =
