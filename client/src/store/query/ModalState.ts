@@ -9,9 +9,9 @@ const GQL_CLOSE_SIGNUP_MODAL = require('@store/graphql/SignupModalClose.gql');
 const GQL_OPEN_FORGOT_PW_MODAL = require('@store/graphql/ForgotPwModalOpen.gql');
 const GQL_CLOSE_FORGOT_PW_MODAL = require('@store/graphql/ForgotPwModalClose.gql');
 const GQL_OPEN_CREATE_DOLL_WISHLIST_MODAL =
-  require('@store/graphql/CreateDollWishlistModalClose.gql');
-const GQL_CLOSE_CREATE_DOLL_WISHLIST_MODAL =
   require('@store/graphql/CreateDollWishlistModalOpen.gql');
+const GQL_CLOSE_CREATE_DOLL_WISHLIST_MODAL =
+  require('@store/graphql/CreateDollWishlistModalClose.gql');
 const GQL_OPEN_CREATE_COMPANY_MODAL = require('@store/graphql/CreateCompanyModalClose.gql');
 const GQL_CLOSE_CREATE_COMPANY_MODAL = require('@store/graphql/CreateCompanyModalOpen.gql');
 const GQL_OPEN_CREATE_DOLL_MODAL = require('@store/graphql/CreateDollModalOpen.gql');

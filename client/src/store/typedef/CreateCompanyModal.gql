@@ -1,0 +1,4 @@
+extend type Mutation {
+  openCreateCompanyModal: null
+  closeCreateCompanyModal: null
+}

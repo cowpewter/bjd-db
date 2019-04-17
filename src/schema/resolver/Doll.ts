@@ -15,10 +15,12 @@ interface CreateDollArgs {
     isPrivate: boolean;
     isWishlist: boolean;
     allowComments: boolean;
-    sex: DollSex | null;
-    gender: DollGender | null;
-    profileImageId: string | null;
-    wishlistId: string | null;
+    sex?: DollSex;
+    gender?: DollGender;
+    profileImageId?: string;
+    wishlistId?: string;
+    wishlistName?: string;
+    wishlistIsPrivate?: boolean;
   };
 }
 
@@ -83,7 +85,13 @@ const resolver = {
       }
       if (args.data.wishlistId) {
         const wishlist = new DollWishlist();
-        wishlist.id = args.data.wishlistId;
+        if (args.data.wishlistId === 'new') {
+          wishlist.name = args.data.wishlistName || 'New Wishlist';
+          wishlist.isPrivate = !!args.data.wishlistIsPrivate;
+          await getRepository(DollWishlist).save(wishlist);
+        } else {
+          wishlist.id = args.data.wishlistId;
+        }
         doll.wishlist = wishlist;
       }
 

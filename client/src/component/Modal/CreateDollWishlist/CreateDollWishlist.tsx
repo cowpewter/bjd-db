@@ -5,6 +5,7 @@ import {
   CreateDollWishlistMutation,
   GQL_CREATE_DOLL_WISHLIST,
 } from '@store/query/CreateDollWishlist';
+import { GQL_GET_MY_WISHLISTS } from '@store/query/GetMyWishlists';
 import {
   CloseCreateDollWishlistModalMutation,
   GQL_CLOSE_CREATE_DOLL_WISHLIST_MODAL,
@@ -15,7 +16,7 @@ const CreateDollWishlist: SFC = () => (
     {closeCreateDollWishlistModal => (
       <CreateDollWishlistMutation
         mutation={GQL_CREATE_DOLL_WISHLIST}
-        refetchQueries={['getMyWishlists']}
+        refetchQueries={[{ query: GQL_GET_MY_WISHLISTS }]}
       >
         {createDollWishlist => (
           <CreateDollWishlistView

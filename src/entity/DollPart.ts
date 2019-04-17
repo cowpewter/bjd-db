@@ -10,8 +10,8 @@ import { Company } from './Company';
 import { User } from './User';
 import { UserPart } from './UserPart';
 
-export type DollPartType = 'head' | 'body' | 'upperBody' | 'lowerBody' |
-  'upperRightArm' | 'lowerRightArm' | 'rightHand' |
+export type DollPartType = 'head' | 'upperBody' | 'lowerBody' |
+  'rightUpperArm' | 'rightLowerArm' | 'rightHand' |
   'leftUpperArm' | 'leftLowerArm' | 'leftHand' |
   'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' |
   'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'accessory';

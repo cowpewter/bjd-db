@@ -6,10 +6,12 @@ import SocialLinks from '@component/shared/SocialLinks';
 import ThumbnailImg from '@component/shared/ThumbnailImg';
 import { SaveUserDescriptionOutput } from '@store/query/SaveUserDescription';
 import { UserProfile } from '@store/type/UserProfile';
+import { Menu } from 'antd';
 import { OperationVariables, PureQueryOptions } from 'apollo-boost';
 import { GraphQLError } from 'graphql';
 import React, { Component, createRef, Fragment } from 'react';
 import { MutationFn } from 'react-apollo';
+import { Link } from 'react-router-dom';
 
 const style = require('./UserProfileView.m.less');
 
@@ -82,8 +84,24 @@ class UserProfileView extends Component<UserProfileViewProps, UserProfileViewSta
       '/siteImages/default-avatar-REPLACE_ME.png';
     return (
       <Fragment>
-        <section className={style.profile}>
-          <ThumbnailImg src={avatar} alt={`Profile Image for ${user.username}`} />
+        <section className="profileHead">
+          <Menu mode="vertical" defaultSelectedKeys={['profile']} className="pageMenu">
+            <Menu.Item key="profile">
+              <Link to={`/user/${user.username}`}>Profile</Link>
+            </Menu.Item>
+            <Menu.Item key="dolls">
+              <Link to={`/user/${user.username}/dolls`}>Dolls</Link>
+            </Menu.Item>
+            <Menu.Item key="albums">
+              <Link to={`/user/${user.username}/dolls`}>Albums</Link>
+            </Menu.Item>
+            {isCurrentUser && (
+              <Menu.Item key="parts">
+                <Link to={`/user/${user.username}/parts`}>Parts</Link>
+              </Menu.Item>
+            )}
+          </Menu>
+          <ThumbnailImg size="large" src={avatar} alt={`Profile Image for ${user.username}`} />
           <div className={style.info}>
             <h1>{user.username}</h1>
             <SocialLinks

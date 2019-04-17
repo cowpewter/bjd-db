@@ -8,17 +8,17 @@ export interface DollConfiguration {
   head: UserPart | null;
   upperBody: UserPart | null;
   lowerBody: UserPart | null;
-  upperRightArm: UserPart | null;
-  lowerRightArm: UserPart | null;
+  rightUpperArm: UserPart | null;
+  rightLowerArm: UserPart | null;
   rightHand: UserPart | null;
-  upperLeftArm: UserPart | null;
-  lowerLeftArm: UserPart | null;
+  leftUpperArm: UserPart | null;
+  leftLowerArm: UserPart | null;
   leftHand: UserPart | null;
-  upperRightLeg: UserPart | null;
-  lowerRightLeg: UserPart | null;
+  rightUpperLeg: UserPart | null;
+  rightLowerLeg: UserPart | null;
   rightFoot: UserPart | null;
-  upperLeftLeg: UserPart | null;
-  lowerLeftLeg: UserPart | null;
+  leftUpperLeg: UserPart | null;
+  leftLowerLeg: UserPart | null;
   leftFoot: UserPart | null;
   extraParts: UserPart[];
 }

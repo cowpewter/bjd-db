@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { WishlistSelectorValue } from './';
 import WishlistSelectorView from './WishlistSelectorView';
 
 import {
@@ -12,15 +13,14 @@ import {
 
 interface WishlistSelectorProps {
   onChange?: (ev: any) => void;
-  value?: string;
+  value?: WishlistSelectorValue;
 }
 
 class WishlistSelector extends Component<WishlistSelectorProps> {
-  handleChange = (newValue?: string) => {
-    const wishlistId = newValue === 'new' ? undefined : newValue;
+  handleSelectChange = (newValue?: WishlistSelectorValue) => {
     const { onChange } = this.props;
     if (onChange) {
-      onChange(wishlistId);
+      onChange(newValue);
     }
   }
 
@@ -36,18 +36,13 @@ class WishlistSelector extends Component<WishlistSelectorProps> {
           }
           const { dollWishlists } = data.me;
           const { value } = this.props;
-          console.warn(value);
+
           return (
-            <OpenCreateDollWishlistModalMutation mutation={GQL_OPEN_CREATE_DOLL_WISHLIST_MODAL}>
-              {openCreateWishlistModal => (
-                <WishlistSelectorView
-                  wishlists={dollWishlists}
-                  openCreateWishlistModal={openCreateWishlistModal}
-                  onChange={this.handleChange}
-                  value={value}
-                />
-              )}
-            </OpenCreateDollWishlistModalMutation>
+            <WishlistSelectorView
+              wishlists={dollWishlists}
+              onChange={this.handleSelectChange}
+              value={value}
+            />
           );
         }}
       </GetWishlistsQuery>

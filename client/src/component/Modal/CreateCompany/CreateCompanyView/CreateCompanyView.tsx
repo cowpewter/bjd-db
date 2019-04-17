@@ -139,7 +139,10 @@ class CreateCompanyView extends Component<CreateCompanyViewProps, CreateCompanyV
           <Form.Item>
             {getFieldDecorator('isPrivate')(
               <Checkbox>
-                Make this wishlist private? (others will not see it on your profile)
+                Make this wishlist private?
+                <span className={sharedStyle.subtitle}>
+                  (others will not see it on your profile)
+                </span>
               </Checkbox>,
             )}
           </Form.Item>

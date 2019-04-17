@@ -6,17 +6,17 @@ type DollConfiguration {
   head: UserPart
   upperBody: UserPart
   lowerBody: UserPart
-  upperRightArm: UserPart
-  lowerRightArm: UserPart
+  rightUpperArm: UserPart
+  rightLowerArm: UserPart
   rightHand: UserPart
-  upperLeftArm: UserPart
-  lowerLeftArm: UserPart
+  leftUpperArm: UserPart
+  leftLowerArm: UserPart
   leftHand: UserPart
-  upperRightLeg: UserPart
-  lowerRightLeg: UserPart
+  rightUpperLeg: UserPart
+  rightLowerLeg: UserPart
   rightFoot: UserPart
-  upperLeftLeg: UserPart
-  lowerLeftLeg: UserPart
+  leftUpperLeg: UserPart
+  leftLowerLeg: UserPart
   leftFoot: UserPart
   extraParts: [UserPart!]
 }

@@ -5,6 +5,27 @@
   border-bottom-left-radius: @border-radius-base;
   border-bottom-right-radius: @border-radius-base;
   padding: 24px;
+  position: relative;
+
+  :global .pageMenu {
+    margin-right: 24px;
+    border: none;
+    .ant-menu-item {
+      border-radius: @border-radius-base;
+    }
+  }
+
+  :global .profileHead {
+    display: flex;
+
+    @media screen and (max-width: 599px) {
+      flex-direction: column;
+
+      & > * {
+        margin-bottom: 24px;
+      }
+    }
+  }
 
   :global section {
     margin-bottom: 24px;
@@ -42,14 +63,24 @@
     display: flex;
     justify-content: space-evenly;
 
+    @media screen and (max-width: 599px) {
+      flex-direction: column;
+    }
+
     & > div {
       flex-grow: 1;
 
       &:first-child {
         margin-right: 12px;
+        @media screen and (max-width: 599px) {
+          margin-right: 0;
+        }
       }
       &:last-child {
         margin-left: 12px;
+        @media screen and (max-width: 599px) {
+          margin-left: 0;
+        }
       }
     }
 

@@ -2,11 +2,13 @@ import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import { Upload } from 'antd';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload/interface';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 interface ProfileImageUploaderProps {
   onChange?: (ev: any) => void;
   value?: string;
+  className?: string;
+  label?: string;
 }
 
 interface ProfileImageUploaderState {
@@ -52,6 +54,7 @@ class ProfileImageUploader extends Component<ProfileImageUploaderProps, ProfileI
 
   render() {
     const { errorMsgs, imgUrl } = this.state;
+    const { className, label } = this.props;
     const uploadButton = (
       <div>
         <FaIcon
@@ -59,11 +62,11 @@ class ProfileImageUploader extends Component<ProfileImageUploaderProps, ProfileI
           icon={this.state.loading ? 'spinner-third' : 'plus'}
           type="light"
         />
-        <div>{this.state.loading ? 'Uploading...' : 'Upload'}</div>
+        <div>{this.state.loading ? 'Uploading...' : label ? label : 'Upload'}</div>
       </div>
     );
     return (
-      <Fragment>
+      <div className={className}>
         <Errors errors={errorMsgs} />
         <Upload
           name="profileImage"
@@ -80,7 +83,7 @@ class ProfileImageUploader extends Component<ProfileImageUploaderProps, ProfileI
             uploadButton
           }
         </Upload>
-      </Fragment>
+      </div>
     );
   }
 }

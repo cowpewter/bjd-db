@@ -1,0 +1,4 @@
+extend type Mutation {
+  openCreateDollWishlistModal: null
+  closeCreateDollWishlistModal: null
+}

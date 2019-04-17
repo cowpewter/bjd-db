@@ -7,6 +7,7 @@ import {
   CreateDollMutation,
   GQL_CREATE_DOLL,
 } from '@store/query/CreateDoll';
+import { GQL_GET_MY_WISHLISTS } from '@store/query/GetMyWishlists';
 import { GQL_ME } from '@store/query/Me';
 import {
   CloseCreateDollModalMutation,
@@ -28,10 +29,15 @@ const CreateDoll: SFC<CreateDollProps> = ({ user }) => {
       query: GQL_ME,
     },
     {
-      query: GQL_USER_PROFILE,
-      variables: { username: user.username },
+      query: GQL_GET_MY_WISHLISTS,
     },
   ];
+  if (user) {
+    createRefetchProps.push({
+      query: GQL_USER_PROFILE,
+      variables: { username: user.username },
+    });
+  }
 
   return (
     <CloseCreateDollModalMutation mutation={GQL_CLOSE_CREATE_DOLL_MODAL}>

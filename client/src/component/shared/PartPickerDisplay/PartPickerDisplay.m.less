@@ -1,0 +1,175 @@
+.root {
+  position: relative;
+  background-color: @component-background-alt;
+  width: 140px;
+  height: 330px;
+
+  :global .selectable {
+    color: fadeOut(@text-color, 30%);
+    border: 2px solid fadeOut(@text-color, 30%);
+    border-radius: 4px;
+    cursor: pointer;
+
+    &.selected {
+      border: 2px solid @link-color;
+      background-color: fade(@link-color, 50%);
+    }
+  }
+}
+
+.rightMarker {
+  color: fadeOut(@text-color, 30%);
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}
+
+.leftMarker {
+  color: fadeOut(@text-color, 30%);
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.head {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  left: 55px;
+}
+
+.body {
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  top: 50px;
+  left: 20px;
+  width: 100px;
+  height: 220px;
+}
+
+.upperBody {
+  position: absolute;
+  width: 30px;
+  height: 40px;
+  top: 50px;
+  left: 55px;
+}
+
+.lowerBody {
+  position: absolute;
+  width: 30px;
+  height: 40px;
+  top: 100px;
+  left: 55px;
+}
+
+.rightUpperArm {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 40px;
+  left: 20px;
+}
+
+.rightLowerArm {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 90px;
+  left: 20px;
+}
+
+.rightHand {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 140px;
+  left: 20px;
+}
+
+.leftUpperArm {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 40px;
+  left: 100px;
+}
+
+.leftLowerArm {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 90px;
+  left: 100px;
+}
+
+.leftHand {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 140px;
+  left: 100px;
+}
+
+.rightUpperLeg {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 150px;
+  left: 45px;
+}
+
+.rightLowerLeg {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 200px;
+  left: 45px;
+}
+
+.rightFoot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 250px;
+  left: 45px;
+}
+
+.leftUpperLeg {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 150px;
+  left: 75px;
+}
+
+.leftLowerLeg {
+  position: absolute;
+  width: 20px;
+  height: 40px;
+  top: 200px;
+  left: 75px;
+}
+
+.leftFoot {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 250px;
+  left: 75px;
+}
+
+.accessory {
+  font-weight: bold;
+  position: absolute;
+  width: 70px;
+  height: 40px;
+  top: 280px;
+  left: 35px;
+  text-align: center;
+  line-height: 40px;
+}

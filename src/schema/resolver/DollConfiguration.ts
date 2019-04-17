@@ -16,49 +16,49 @@ const resolver = {
       getRepository(UserPart)
         .findOne({ where: { lowerBody: parent } }),
 
-    upperRightArm: (parent: DollConfiguration) =>
+    rightUpperArm: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { upperRightArm: parent } }),
+        .findOne({ where: { rightUpperArm: parent } }),
 
-    lowerRightArm: (parent: DollConfiguration) =>
+    rightLowerArm: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { lowerRightArm: parent } }),
+        .findOne({ where: { rightLowerArm: parent } }),
 
     rightHand: (parent: DollConfiguration) =>
       getRepository(UserPart)
         .findOne({ where: { rightHand: parent } }),
 
-    upperLeftArm: (parent: DollConfiguration) =>
+    leftUpperArm: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { upperLeftArm: parent } }),
+        .findOne({ where: { leftUpperArm: parent } }),
 
-    lowerLeftArm: (parent: DollConfiguration) =>
+    leftLowerArm: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { lowerLeftArm: parent } }),
+        .findOne({ where: { leftLowerArm: parent } }),
 
     leftHand: (parent: DollConfiguration) =>
       getRepository(UserPart)
         .findOne({ where: { leftHand: parent } }),
 
-    upperRightLeg: (parent: DollConfiguration) =>
+    rightUpperLeg: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { upperRightLeg: parent } }),
+        .findOne({ where: { rightUpperLeg: parent } }),
 
-    lowerRightLeg: (parent: DollConfiguration) =>
+    rightLowerLeg: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { lowerRightLeg: parent } }),
+        .findOne({ where: { rightLowerLeg: parent } }),
 
     rightFoot: (parent: DollConfiguration) =>
       getRepository(UserPart)
         .findOne({ where: { rightFoot: parent } }),
 
-    upperLeftLeg: (parent: DollConfiguration) =>
+    leftUpperLeg: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { upperLeftLeg: parent } }),
+        .findOne({ where: { leftUpperLeg: parent } }),
 
-    lowerLeftLeg: (parent: DollConfiguration) =>
+    leftLowerLeg: (parent: DollConfiguration) =>
       getRepository(UserPart)
-        .findOne({ where: { lowerLeftLeg: parent } }),
+        .findOne({ where: { leftLowerLeg: parent } }),
 
     leftFoot: (parent: DollConfiguration) =>
       getRepository(UserPart)
