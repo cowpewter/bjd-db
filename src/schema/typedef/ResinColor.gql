@@ -1,7 +1,7 @@
 type ResinColor {
   id: ID!
   name: String!
-  colorType: String!
+  colorFamily: String!
   type: String!
   company: Company!
   addedBy: User

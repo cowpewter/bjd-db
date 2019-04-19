@@ -9,7 +9,7 @@ import { Company } from './Company';
 import { User } from './User';
 import { UserPart } from './UserPart';
 
-export type ResinColorType = 'white' | 'light' | 'tan' | 'dark' | 'black' |
+export type ResinColorFamilyType = 'white' | 'light' | 'tan' | 'dark' | 'black' |
   'grey' | 'red' | 'pink' | 'orange' | 'yellow' | 'green' | 'blue' | 'purple';
 
 export type ResinType = 'opaque' | 'semi-translucent' | 'translucent';
@@ -24,7 +24,7 @@ export class ResinColor {
   name: string;
 
   @Column({ type: 'varchar' })
-  colorType: ResinColorType;
+  colorFamily: ResinColorFamilyType;
 
   @Column({ type: 'varchar' })
   type: ResinType;
