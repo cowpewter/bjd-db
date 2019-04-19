@@ -10,7 +10,7 @@ import {
 import { Doll } from './Doll';
 import { UserPart } from './UserPart';
 
-export type DollScaleType = '1/1' | '1/2' | '1/3' | '1/4' | '1/8' | '1/12' | 'Micro';
+export type DollScaleType = '1/1' | '1/2' | '1/3' | '1/4' | '1/7' |  '1/8' | '1/12' | 'Micro';
 export type DollHybridType = 'none' | 'simple' | 'complex';
 
 @Entity()

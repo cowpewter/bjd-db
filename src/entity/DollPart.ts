@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { Company } from './Company';
+import { DollScaleType } from './DollConfiguration';
 import { User } from './User';
 import { UserPart } from './UserPart';
 
@@ -24,6 +25,9 @@ export class DollPart {
 
   @Column({ type: 'varchar' })
   type: DollPartType;
+
+  @Column()
+  scale: DollScaleType;
 
   @Column()
   name: string;
