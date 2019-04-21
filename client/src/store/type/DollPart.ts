@@ -3,9 +3,18 @@ import { User } from './User';
 
 export interface DollPart {
   id: string;
-  type: string;
   name: string;
+  type: Parts;
+  scale: DollScaleType;
   company: Company;
   addedBy: User | null;
+  vetted: boolean;
+}
+
+export interface MinimalDollPart {
+  id: string;
+  name: string;
+  type: Parts;
+  scale: DollScaleType;
   vetted: boolean;
 }

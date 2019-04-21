@@ -1,3 +1,11 @@
+extend type Query {
+  getCompanyResin(companyId: ID!): [ResinColor]
+}
+
+extend type Mutation {
+  createResinColor(name: String! type: String!, colorFamily: String!, companyId: ID!): ResinColor
+}
+
 type ResinColor {
   id: ID!
   name: String!

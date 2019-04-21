@@ -55,10 +55,10 @@ class UserProfileView extends Component<UserProfileViewProps, UserProfileViewSta
           savingDescription: false,
         });
       })
-      .catch((error) => {
+      .catch((errors) => {
         const errorMsgs: string[] = [];
-        if (error.graphQLErrors) {
-          error.graphQLErrors.forEach((error: GraphQLError) => {
+        if (errors.graphQLErrors) {
+          errors.graphQLErrors.forEach((error: GraphQLError) => {
             if (error.message) {
               errorMsgs.push(error.message);
             }

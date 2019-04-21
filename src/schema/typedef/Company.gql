@@ -1,5 +1,6 @@
 extend type Query {
   company(id: ID!): Company
+  getCompanies: [Company]
 }
 
 extend type Mutation {

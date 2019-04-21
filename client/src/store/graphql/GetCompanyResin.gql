@@ -1,0 +1,9 @@
+query getCompanyResin($companyId: ID!) {
+  getCompanyResin(companyId: $companyId) {
+    id
+    name
+    type
+    colorFamily
+    vetted
+  }
+}

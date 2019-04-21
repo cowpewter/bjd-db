@@ -2,5 +2,6 @@ mutation createCompany($name: String!, $country: String, $website: String) {
   createCompany(name: $name, country: $country, website: $website) {
     id
     name
+    vetted
   }
 }

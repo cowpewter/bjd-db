@@ -1,0 +1,9 @@
+mutation createResinColor($name: String!, $type: String!, $colorFamily: String!, $companyId: ID!) {
+  createResinColor(name: $name, type: $type, colorFamily: $colorFamily, companyId: $companyId) {
+    id
+    name
+    type
+    colorFamily
+    vetted
+  }
+}

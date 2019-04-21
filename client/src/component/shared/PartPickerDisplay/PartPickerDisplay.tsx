@@ -1,9 +1,11 @@
 import { Tooltip } from 'antd';
+import classnames from 'classnames';
 import React, { Component } from 'react';
 
 const style = require('./PartPickerDisplay.m.less');
 
 interface Props {
+  className?: string;
   isHybrid: boolean;
   isComplexHybrid: boolean;
   selected?: Parts;
@@ -117,9 +119,9 @@ class PartPickerDisplay extends Component<Props> {
   }
 
   render() {
-    const { isHybrid, isComplexHybrid, selected, onSelectedPartChange } = this.props;
+    const { isHybrid, isComplexHybrid, selected, onSelectedPartChange, className } = this.props;
     return (
-      <div className={style.root}>
+      <div className={classnames(style.root, className)}>
         <div className={style.rightMarker}>R</div>
         <div className={style.leftMarker}>L</div>
 

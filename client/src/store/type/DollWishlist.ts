@@ -11,10 +11,3 @@ export interface DollWishlist extends MinimalDollWishlist {
   user: User;
   dolls: Doll[];
 }
-
-export interface MyWishlistsOutput {
-  me: {
-    id: string;
-    dollWishlists: MinimalDollWishlist[];
-  };
-}

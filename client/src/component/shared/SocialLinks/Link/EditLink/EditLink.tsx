@@ -45,11 +45,11 @@ class EditLink extends Component<EditLinkProps, EditLinkState> {
             this.setState({ isSaving: false });
             this.props.cancelEdit();
           })
-          .catch((error) => {
-            console.warn(error);
+          .catch((errors) => {
+            console.warn(errors);
             const errorMsgs: Error[] = [];
-            if (error.graphQLErrors) {
-              error.graphQLErrors.forEach((error: GraphQLError) => {
+            if (errors.graphQLErrors) {
+              errors.graphQLErrors.forEach((error: GraphQLError) => {
                 if (error.message) {
                   errorMsgs.push(new Error(error.message));
                 }

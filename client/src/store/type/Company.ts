@@ -4,8 +4,14 @@ import { User } from './User';
 export interface Company {
   id: string;
   name: string;
-  country: string | null;
+  country: string;
   socialLinks: SocialLink[];
-  addedBy: User | null;
+  addedBy: User;
+  vetted: boolean;
+}
+
+export interface MinimalCompany {
+  id: string;
+  name: string;
   vetted: boolean;
 }

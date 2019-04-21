@@ -1,0 +1,7 @@
+query getCompanyParts($companyId: ID!, $scale: String!, $type: String!) {
+  getCompanyParts(companyId: $companyId, scale: $scale, type: $type) {
+    id
+    name
+    vetted
+  }
+}

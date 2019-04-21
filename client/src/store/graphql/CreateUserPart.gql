@@ -1,0 +1,5 @@
+mutation createUserPart($partId: ID!, $resinColorId: ID!, $artistId: ID, $isWishlist: Boolean!) {
+  createUserPart(partId: $partId, resinColorId: $resinColorId, artistId: $artistId, isWishlist: $isWishlist) {
+    id
+  }
+}

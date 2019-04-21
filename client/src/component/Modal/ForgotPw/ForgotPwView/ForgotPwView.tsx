@@ -44,22 +44,24 @@ class ForgotPwView extends Component<ForgotPwViewProps, ForgotPwViewState> {
           .then(() => {
             this.setState({ success: true });
           })
-          .catch((error) => {
+          .catch((errors) => {
             const errorMsgs: string[] = [];
-            if (error.graphQLErrors) {
-              error.graphQLErrors.forEach((error: GraphQLError) => {
+            if (errors.graphQLErrors) {
+              errors.graphQLErrors.forEach((error: GraphQLError) => {
                 if (error.message) {
                   errorMsgs.push(error.message);
                 }
                 if (error.extensions) {
                   const { validationErrors } = error.extensions.exception;
                   const fieldData: any = {};
-                  Object.keys(validationErrors).forEach((fieldName) => {
-                    fieldData[fieldName] = {
-                      errors: [new Error(validationErrors[fieldName])],
-                      value: values[fieldName],
-                    };
-                  });
+                  if (validationErrors) {
+                    Object.keys(validationErrors).forEach((fieldName) => {
+                      fieldData[fieldName] = {
+                        errors: [new Error(validationErrors[fieldName])],
+                        value: values[fieldName],
+                      };
+                    });
+                  }
                   this.props.form.setFields(fieldData);
                 }
               });

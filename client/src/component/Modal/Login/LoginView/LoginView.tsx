@@ -45,10 +45,10 @@ class LoginView extends Component<LoginViewProps, LoginViewState> {
           .then(() => {
             this.handleCancel();
           })
-          .catch((error) => {
+          .catch((errors) => {
             const errorMsgs: string[] = [];
-            if (error.graphQLErrors) {
-              error.graphQLErrors.forEach((error: GraphQLError) => {
+            if (errors.graphQLErrors) {
+              errors.graphQLErrors.forEach((error: GraphQLError) => {
                 if (error.message) {
                   errorMsgs.push(error.message);
                 }

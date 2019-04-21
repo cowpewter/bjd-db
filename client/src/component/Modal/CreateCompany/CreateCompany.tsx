@@ -15,7 +15,7 @@ const CreateDollWishlist: SFC = () => (
     {closeCreateCompanyModal => (
       <CreateCompanyMutation
         mutation={GQL_CREATE_COMPANY}
-        refetchQueries={['getMyWishlists']}
+        refetchQueries={['getCompanies']}
       >
         {createCompany => (
           <CreateCompanyView

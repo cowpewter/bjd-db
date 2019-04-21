@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,6 +15,7 @@ export class CreateBan {
   id: string;
 
   @OneToOne(() => User, (user: User) => user.createBan)
+  @JoinColumn()
   user: User;
 
   @Column()

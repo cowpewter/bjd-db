@@ -1,0 +1,9 @@
+mutation createDollPart($name: String!, $type: String!, $scale: String!, $companyId: ID!) {
+  createDollPart(name: $name, type: $type, scale: $scale, companyId: $companyId) {
+    id
+    name
+    type
+    scale
+    vetted
+  }
+}

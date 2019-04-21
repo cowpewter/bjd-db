@@ -1,8 +1,17 @@
+extend type Query {
+  getCompanyParts(companyId: ID!, type: String!, scale: String!): [DollPart]
+}
+
+extend type Mutation {
+  createDollPart(name: String! type: String!, scale: String!, companyId: ID!): DollPart
+}
+
 type DollPart {
   id: ID!
   type: String!
   name: String!
-  company: Company
-  addedBy: User
+  scale: String!
+  company: Company!
+  addedBy: User!
   vetted: Boolean!
 }

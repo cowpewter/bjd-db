@@ -1,4 +1,4 @@
-mutation saveDollConfiguration($data: SaveDolLConfigInput!) {
+mutation saveDollConfiguration($data: SaveDollConfigInput!) {
   saveDollConfiguration(data: $data) {
     id
   }

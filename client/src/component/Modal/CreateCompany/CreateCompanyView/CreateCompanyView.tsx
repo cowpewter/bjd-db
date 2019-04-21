@@ -2,7 +2,7 @@ import CountryInput from '@component/shared/CountryInput';
 import Errors from '@component/shared/Errors';
 import FaIcon from '@component/shared/FaIcon';
 import SocialLinkHelpers from '@component/shared/SocialLinks/SocialLinkHelpers';
-import { Company } from '@store/type/Company';
+import { CreateCompanyOutput } from '@store/query/CreateCompany';
 import { Button, Checkbox, Form, Input, Modal } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { GraphQLError } from 'graphql';
@@ -13,7 +13,7 @@ const sharedStyle = require('@component/Modal/SharedStyles.m.less');
 
 interface CreateCompanyViewProps {
   closeModal: MutationFn<null>;
-  createCompany: MutationFn<Company>;
+  createCompany: MutationFn<CreateCompanyOutput>;
   form: WrappedFormUtils;
 }
 
@@ -44,25 +44,27 @@ class CreateCompanyView extends Component<CreateCompanyViewProps, CreateCompanyV
           .then(() => {
             this.handleCancel();
           })
-          .catch((error) => {
+          .catch((errors) => {
             const errorMsgs: string[] = [];
-            if (error.graphQLErrors) {
-              error.graphQLErrors.forEach((error: GraphQLError) => {
+            if (errors.graphQLErrors) {
+              errors.graphQLErrors.forEach((error: GraphQLError) => {
                 if (error.message) {
                   errorMsgs.push(error.message);
                 }
+                if (error.extensions) {
+                  const { validationErrors } = error.extensions.exception;
+                  const fieldData: any = {};
+                  if (validationErrors) {
+                    Object.keys(validationErrors).forEach((fieldName) => {
+                      fieldData[fieldName] = {
+                        errors: [new Error(validationErrors[fieldName])],
+                        value: values[fieldName],
+                      };
+                    });
+                  }
+                  this.props.form.setFields(fieldData);
+                }
               });
-              if (error.extensions) {
-                const { validationErrors } = error.extensions.exception;
-                const fieldData: any = {};
-                Object.keys(validationErrors).forEach((fieldName) => {
-                  fieldData[fieldName] = {
-                    errors: [new Error(validationErrors[fieldName])],
-                    value: values[fieldName],
-                  };
-                });
-                this.props.form.setFields(fieldData);
-              }
             }
             this.setState({ errorMsgs });
           });
