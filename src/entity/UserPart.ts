@@ -9,6 +9,7 @@ import {
 
 import { DollConfiguration } from './DollConfiguration';
 import { DollPart } from './DollPart';
+import { DollWishlist } from './DollWishlist';
 import { FaceupArtist } from './FaceupArtist';
 import { Purchase } from './Purchase';
 import { ResinColor } from './ResinColor';
@@ -28,6 +29,9 @@ export class UserPart {
 
   @Column({ default: false })
   isWishlist: boolean;
+
+  @ManyToOne(() => DollWishlist, (wishlist: DollWishlist) => wishlist.parts)
+  wishlist: DollWishlist;
 
   @ManyToOne(() => FaceupArtist, (artist: FaceupArtist) => artist.parts)
   artist: FaceupArtist;

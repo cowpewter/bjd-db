@@ -19,7 +19,7 @@ export class DollConfiguration {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Column()
+  @Column({ default: null })
   height: number; // in cm
 
   @Column()

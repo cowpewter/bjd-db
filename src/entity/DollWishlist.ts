@@ -8,6 +8,7 @@ import {
 
 import { Doll } from './Doll';
 import { User } from './User';
+import { UserPart } from './UserPart';
 
 @Entity()
 export class DollWishlist {
@@ -23,6 +24,9 @@ export class DollWishlist {
 
   @OneToMany(() => Doll, (doll: Doll) => doll.wishlist)
   dolls: Doll[];
+
+  @OneToMany(() => UserPart, (part: UserPart) => part.wishlist)
+  parts: UserPart[];
 
   @ManyToOne(() => User, (user: User) => user.wishlists)
   user: User;
