@@ -37,7 +37,10 @@ const resolver = {
   Query: {
     getCompanyResin: (_: any, args: GetCompanyResinArgs) =>
       getRepository(ResinColor)
-        .find({ where: { company: { id: args.companyId } } }),
+        .find({
+          where: { company: { id: args.companyId } },
+          order: { colorFamily: 'ASC' },
+        }),
   },
 
   Mutation: {

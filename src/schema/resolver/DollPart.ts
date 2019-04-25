@@ -40,7 +40,10 @@ const resolver = {
   Query: {
     getCompanyParts: (_: any, args: GetCompanyPartsArgs) =>
       getRepository(DollPart)
-        .find({ where: { company: { id: args.companyId }, type: args.type, scale: args.scale } }),
+        .find({
+          where: { company: { id: args.companyId }, type: args.type, scale: args.scale },
+          order: { name: 'ASC' },
+        }),
   },
 
   Mutation: {

@@ -7,16 +7,16 @@ import {
   CreateDollMutation,
   GQL_CREATE_DOLL,
 } from '@store/query/CreateDoll';
+import {
+  CreateDollConfigurationMutation,
+  GQL_CREATE_DOLL_CONFIG,
+} from '@store/query/CreateDollConfiguration';
 import { GQL_GET_MY_WISHLISTS } from '@store/query/GetMyWishlists';
 import { GQL_ME } from '@store/query/Me';
 import {
   CloseCreateDollModalMutation,
   GQL_CLOSE_CREATE_DOLL_MODAL,
 } from '@store/query/ModalState';
-import {
-  GQL_SAVE_DOLL_CONFIG,
-  SaveDollConfigurationMutation,
-} from '@store/query/SaveDollConfiguration';
 import { GQL_USER_PROFILE } from '@store/query/UserProfile';
 
 interface CreateDollProps {
@@ -47,16 +47,16 @@ const CreateDoll: SFC<CreateDollProps> = ({ user }) => {
           refetchQueries={createRefetchProps}
         >
           {createDoll => (
-            <SaveDollConfigurationMutation mutation={GQL_SAVE_DOLL_CONFIG}>
-              {saveDollConfig => (
+            <CreateDollConfigurationMutation mutation={GQL_CREATE_DOLL_CONFIG}>
+              {createDollConfig => (
                 <CreateDollView
                   user={user}
                   closeModal={closeModal}
                   createDoll={createDoll}
-                  saveDollConfig={saveDollConfig}
+                  saveDollConfig={createDollConfig}
                 />
               )}
-            </SaveDollConfigurationMutation>
+            </CreateDollConfigurationMutation>
           )}
         </CreateDollMutation>
       )}

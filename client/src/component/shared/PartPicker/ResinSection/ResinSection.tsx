@@ -139,7 +139,7 @@ class ResinSection extends Component<Props> {
                 </div>
                 )}
               >
-                <Form.Item label="Part" className={sharedStyle.mainFormItem}>
+                <Form.Item label="Resin Color" className={sharedStyle.mainFormItem}>
                   <AutoComplete
                     placeholder="Resin Color"
                     dataSource={colorDataSource}

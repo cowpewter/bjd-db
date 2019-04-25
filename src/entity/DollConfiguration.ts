@@ -15,6 +15,7 @@ export type DollHybridType = 'none' | 'simple' | 'complex';
 
 @Entity()
 export class DollConfiguration {
+  [key: string]: any;
 
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;

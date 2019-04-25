@@ -1,0 +1,5 @@
+mutation createDollConfiguration($data: CreateDollConfigurationInput!) {
+  createDollConfiguration(data: $data) {
+    id
+  }
+}

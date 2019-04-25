@@ -1,3 +1,43 @@
+extend type Mutation {
+  createDollConfiguration(data: CreateDollConfigurationInput!): DollConfiguration
+}
+
+input CreateDollConfigurationInput {
+  dollId: ID!
+  height: Int
+  scale: String!
+  hybridType: String!
+  parts: PartsInput
+}
+
+input PartsInput {
+  head: UserPartInput
+  body: UserPartInput
+  upperBody: UserPartInput
+  lowerBody: UserPartInput
+  rightUpperArm: UserPartInput
+  rightLowerArm: UserPartInput
+  rightHand: UserPartInput
+  leftUpperArm: UserPartInput
+  leftLowerArm: UserPartInput
+  leftHand: UserPartInput
+  rightUpperLeg: UserPartInput
+  rightLowerLeg: UserPartInput
+  rightFoot: UserPartInput
+  leftUpperLeg: UserPartInput
+  leftLowerLeg: UserPartInput
+  leftFoot: UserPartInput
+  extraParts: [UserPartInput!]
+}
+
+input UserPartInput {
+  id: ID!
+  dollPartId: ID!
+  resinColorId: ID!
+  artistId: ID
+  wishlistId: ID
+}
+
 type DollConfiguration {
   id: ID!
   height: Int

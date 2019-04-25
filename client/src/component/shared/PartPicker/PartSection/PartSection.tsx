@@ -57,7 +57,7 @@ class PartSection extends Component<Props> {
         variables={{
           scale,
           companyId: company.id,
-          type: partType,
+          type: partType === 'body' ? 'upperBody' : partType,
         }}
       >
         {({ loading, error, data }) => {

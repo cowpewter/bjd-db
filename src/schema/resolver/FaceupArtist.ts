@@ -4,7 +4,14 @@ import { SocialMediaLink, sortLinks } from '@entity/SocialMediaLink';
 import { User } from '@entity/User';
 import { IdArgs } from '@schema/args';
 import { GQLContext } from '@schema/index';
+import { AuthenticationError } from 'apollo-server';
 import { getRepository } from 'typeorm';
+
+interface CreateArtistArgs {
+  name: string;
+  country?: string;
+  website?: string;
+}
 
 const resolver = {
   FaceupArtist: {
@@ -33,6 +40,55 @@ const resolver = {
   Query: {
     faceupArtist: (_: any, args: IdArgs) =>
       getRepository(FaceupArtist).findOne(args.id),
+
+    getFaceupArtists: () =>
+      getRepository(FaceupArtist).find({
+        order: {
+          name: 'ASC',
+        },
+      }),
+  },
+
+  Mutation: {
+    createFaceupArtist: async (_: any, args: CreateArtistArgs, ctx: GQLContext) => {
+      const { id: userId } = ctx.koaCtx.user;
+      const addedBy = await getRepository(User)
+        .findOne(userId, { relations: ['createBan'] });
+      if (!addedBy) {
+        throw new AuthenticationError('You must be logged in');
+      }
+      if (addedBy.createBan) {
+        throw new AuthenticationError(`You cannot create artists: ${addedBy.createBan.reason}`);
+      }
+
+      const existing = await getRepository(FaceupArtist)
+        .findOne({ where: { name: args.name } });
+      if (existing) {
+        return existing;
+      }
+
+      const artist = new FaceupArtist();
+      artist.name = args.name;
+      artist.addedBy = addedBy;
+      artist.vetted = addedBy.isMod || addedBy.isAdmin;
+      if (args.country) {
+        artist.country = args.country;
+      }
+
+      await getRepository(FaceupArtist).save(artist);
+
+      if (args.website) {
+        const websiteLink = new SocialMediaLink();
+        websiteLink.artist = artist;
+        websiteLink.addedBy = addedBy;
+        websiteLink.service = 'website';
+        websiteLink.url = args.website;
+
+        await getRepository(SocialMediaLink).save(websiteLink);
+      }
+
+      return artist;
+    },
   },
 };
 

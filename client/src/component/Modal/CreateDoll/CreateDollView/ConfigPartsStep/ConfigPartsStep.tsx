@@ -1,17 +1,17 @@
 import Errors from '@component/shared/Errors';
-import PartPicker, { UserPartData } from '@component/shared/PartPicker';
+import PartPicker, { bodyParts, UserPartData } from '@component/shared/PartPicker';
 import PartPickerDisplay from '@component/shared/PartPickerDisplay';
 import ScaleSelector from '@component/shared/ScaleSelector';
 import SelectedPartDisplay from '@component/shared/SelectedPartDisplay';
-import { DollConfiguration } from '@store/type/DollConfiguration';
-import { UserPart } from '@store/type/UserPart';
-import { Button, Checkbox, Input, Modal, Select } from 'antd';
+import { CreateDollConfigOutput } from '@store/query/CreateDollConfiguration';
+import { Button, Checkbox, Input, Modal } from 'antd';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import Form, { WrappedFormUtils } from 'antd/lib/form/Form';
 import { GraphQLError } from 'graphql';
-import { findIndex, isEqual } from 'lodash';
-import React, { Component, SyntheticEvent } from 'react';
+import { findIndex, isEqual, startCase } from 'lodash';
+import React, { ChangeEvent, Component, Fragment, SyntheticEvent } from 'react';
 import { MutationFn } from 'react-apollo';
+import { isArray } from 'util';
 
 const sharedStyle = require('@component/Modal/SharedStyles.m.less');
 const style = require('./ConfigPartsStep.m.less');
@@ -34,24 +34,27 @@ export interface BodyParts {
   leftUpperLeg?: UserPartData;
   leftLowerLeg?: UserPartData;
   leftFoot?: UserPartData;
-  accessory: UserPartData[];
+  extraParts: UserPartData[];
 }
 
 interface Props {
-  nextStep: () => void;
+  nextStep: (dollConfigId: string) => void;
   closeModal: MutationFn<null>;
-  configParts: MutationFn<DollConfiguration>;
+  configParts: MutationFn<CreateDollConfigOutput>;
   dollId?: string;
+  wishlistId?: string;
   form: WrappedFormUtils;
 }
 
 interface State {
   isHybrid: boolean;
   isComplexHybrid: boolean;
+  height?: number;
+  scale: DollScaleType;
   errorMsgs: string[];
   loading: boolean;
+  skipConfirm: boolean;
   selectedPart: Parts;
-  scale: DollScaleType;
 
   parts: BodyParts;
 }
@@ -68,8 +71,10 @@ class ConfigPartsStep extends Component<Props, State> {
     isComplexHybrid: false,
     errorMsgs: [],
     loading: false,
+    skipConfirm: false,
     selectedPart: 'head',
     scale: '1/3',
+    height: undefined,
     parts: {
       head: undefined,
       body: undefined,
@@ -87,7 +92,7 @@ class ConfigPartsStep extends Component<Props, State> {
       leftUpperLeg: undefined,
       leftLowerLeg: undefined,
       leftFoot: undefined,
-      accessory: [],
+      extraParts: [],
     },
   };
 
@@ -97,14 +102,88 @@ class ConfigPartsStep extends Component<Props, State> {
     }
 
     this.props.form.validateFields(async (err, values) => {
-      console.warn(values);
-      if (!err) {
-        const data = {
+      const { parts, skipConfirm, scale, height, isHybrid, isComplexHybrid } = this.state;
+      const { wishlistId, dollId } = this.props;
 
+      if (!err) {
+        const missingParts: string[] = [];
+        if (!parts.head) {
+          missingParts.push('Head');
+        }
+        if (!parts.body) {
+          bodyParts.forEach((part) => {
+            if (!parts[part]) {
+              missingParts.push(startCase(part));
+            }
+          });
+        }
+
+        if (missingParts.length && !skipConfirm) {
+          Modal.confirm({
+            title: 'Are you sure?',
+            content: (
+              <Fragment>
+                <p>Your doll is missing the following parts:</p>
+                <ul>
+                  {missingParts.map((part, index) => <li key={index}>{part}</li>)}
+                </ul>
+                <p>Do you still want to save this configuration?</p>
+              </Fragment>
+            ),
+            onOk: () => {
+              this.setState({ skipConfirm: true });
+              setTimeout(this.handleSubmit, 0);
+            },
+            okText: 'Save',
+            onCancel: () => {},
+          });
+          return;
+        }
+
+        const data: any = {
+          dollId,
+          height,
+          scale,
+          hybridType: isComplexHybrid ? 'complex' : (isHybrid ? 'simple' : 'none'),
+          parts: {},
         };
+        Object.keys(parts).forEach((partType) => {
+          const part = parts[partType];
+          if (isArray(part)) {
+            data.parts[partType] = [];
+            part.forEach((p) => {
+              data.parts[partType].push({
+                wishlistId,
+                id: p.id,
+                dollPartId: p.part.id,
+                resinColorId: p.resinColor.id,
+                artistId: p.artist ? p.artist.id : undefined,
+              });
+            });
+          } else {
+            data.parts[partType] = part ? {
+              wishlistId,
+              id: part.id,
+              dollPartId: part.part.id,
+              resinColorId: part.resinColor.id,
+              artistId: part.artist ? part.artist.id : undefined,
+            } : undefined;
+          }
+        });
+
         this.props.configParts({ variables: { data } })
-          .then(() => {
-            this.props.nextStep();
+          .then((resp) => {
+            console.warn(resp);
+            if (resp && resp.data) {
+              if (wishlistId) {
+                this.props.closeModal();
+              } else {
+                this.props.nextStep(resp.data.createDollConfiguration.id);
+              }
+            } else {
+              const errorMsgs = ['An unexpected error occurred'];
+              this.setState({ errorMsgs });
+            }
           })
           .catch((errors) => {
             const errorMsgs: string[] = [];
@@ -148,7 +227,7 @@ class ConfigPartsStep extends Component<Props, State> {
     const newState: any = {
       isComplexHybrid: newValue,
     };
-    if (!newValue && selectedPart !== 'head' && selectedPart !== 'accessory') {
+    if (!newValue && selectedPart !== 'head' && selectedPart !== 'extraParts') {
       newState.selectedPart = 'body';
     }
     if (newValue && selectedPart === 'body') {
@@ -157,12 +236,17 @@ class ConfigPartsStep extends Component<Props, State> {
     this.setState(newState);
   }
 
+  private handleHeightChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    const newValue = parseInt(ev.target.value, 10);
+    this.setState({ height: newValue });
+  }
+
   private handleScaleChange = (value: string) => {
     const { parts, scale } = this.state;
     if ((parts.head || parts.body || parts.upperBody || parts.lowerBody || parts.rightUpperArm ||
       parts.rightLowerArm || parts.rightHand || parts.leftUpperArm || parts.leftLowerArm ||
       parts.leftHand || parts.rightUpperLeg || parts.rightLowerLeg || parts.rightFoot ||
-      parts.leftUpperLeg || parts.leftLowerLeg || parts.leftFoot || parts.accessory.length) &&
+      parts.leftUpperLeg || parts.leftLowerLeg || parts.leftFoot || parts.extraParts.length) &&
       scale !== value
     ) {
       Modal.confirm({
@@ -197,7 +281,7 @@ class ConfigPartsStep extends Component<Props, State> {
         leftUpperLeg: undefined,
         leftLowerLeg: undefined,
         leftFoot: undefined,
-        accessory: [],
+        extraParts: [],
       },
       scale: newScale,
     });
@@ -208,16 +292,14 @@ class ConfigPartsStep extends Component<Props, State> {
   }
 
   private handleRemoveItem = (part: UserPartData) => {
-    const { parts } = this.state;
-    const selectedPart = part.part.type;
-    if (selectedPart) {
-      if (selectedPart === 'accessory') {
-        const index = findIndex(parts.accessory, item => isEqual(item, part));
-        parts.accessory.splice(index, 1);
-      } else {
-        parts[selectedPart] = undefined;
-      }
+    const { parts, selectedPart } = this.state;
+    if (selectedPart === 'extraParts') {
+      const index = findIndex(parts.extraParts, item => isEqual(item, part));
+      parts.extraParts.splice(index, 1);
+    } else {
+      parts[selectedPart] = undefined;
     }
+
     this.setState({ parts });
   }
 
@@ -235,17 +317,19 @@ class ConfigPartsStep extends Component<Props, State> {
 
   private handleSavePart = (newPart: UserPartData) => {
     const { parts, selectedPart } = this.state;
-    parts[selectedPart] = newPart;
+    if (selectedPart === 'extraParts') {
+      parts.extraParts.push(newPart);
+    } else {
+      parts[selectedPart] = newPart;
+    }
     this.setState({ parts });
   }
 
   public render() {
-    const { dollId } = this.props;
+    const { dollId, wishlistId } = this.props;
     const { loading, errorMsgs, isHybrid, isComplexHybrid, selectedPart, scale } = this.state;
     const { getFieldDecorator } = this.props.form;
     const parts = this.state.parts[selectedPart];
-
-    console.warn(this.state);
 
     if (!dollId) {
       return (
@@ -277,7 +361,7 @@ class ConfigPartsStep extends Component<Props, State> {
             Skip
           </Button>,
           <Button key="create" type="primary" loading={loading} onClick={this.handleSubmit}>
-            Next
+            {wishlistId ? 'Finish' : 'Next'}
           </Button>,
         ]}
       >
@@ -285,13 +369,6 @@ class ConfigPartsStep extends Component<Props, State> {
 
         <Form layout="vertical" onSubmit={this.handleSubmit}>
           <div className={style.optionsWrapper}>
-            <Form.Item label="Doll Scale" className={style.scale}>
-              {getFieldDecorator('scale', {
-                initialValue: scale,
-              })(
-                <ScaleSelector onChange={this.handleScaleChange} />,
-              )}
-            </Form.Item>
             <div className={style.hybridWrapper}>
               <Form.Item>
                 {getFieldDecorator('isHybrid', { valuePropName: 'checked' })(
@@ -311,6 +388,23 @@ class ConfigPartsStep extends Component<Props, State> {
                 )}
               </Form.Item>
             </div>
+            <div className={style.measurementsWrapper}>
+              <Form.Item label="Doll Scale">
+                {getFieldDecorator('scale', {
+                  initialValue: scale,
+                })(
+                  <ScaleSelector onChange={this.handleScaleChange} />,
+                )}
+              </Form.Item>
+              <Form.Item label="Doll's Height (in cm)">
+                {getFieldDecorator('height')(
+                  <Input
+                    type="number"
+                    onChange={this.handleHeightChange}
+                  />,
+                )}
+              </Form.Item>
+            </div>
           </div>
         </Form>
         <div className={style.pickerWrapper}>
@@ -322,14 +416,12 @@ class ConfigPartsStep extends Component<Props, State> {
             onSelectedPartChange={this.handleSelectedPartChange}
           />
           <div>
-            {parts && (
-              <SelectedPartDisplay
-                selectedPart={selectedPart}
-                parts={parts}
-                onRemoveItem={this.handleRemoveItem}
-              />
-            )}
-            {(!parts || selectedPart === 'accessory') && (
+            <SelectedPartDisplay
+              selectedPart={selectedPart}
+              parts={parts}
+              onRemoveItem={this.handleRemoveItem}
+            />
+            {(!parts || selectedPart === 'extraParts') && (
               <PartPicker
                 className={style.picker}
                 scale={scale}

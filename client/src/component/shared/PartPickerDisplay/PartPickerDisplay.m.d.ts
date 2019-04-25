@@ -17,4 +17,4 @@ export const rightFoot: string;
 export const leftUpperLeg: string;
 export const leftLowerLeg: string;
 export const leftFoot: string;
-export const accessory: string;
+export const extraParts: string;

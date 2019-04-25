@@ -15,7 +15,7 @@ export type DollPartType = 'head' | 'upperBody' | 'lowerBody' |
   'rightUpperArm' | 'rightLowerArm' | 'rightHand' |
   'leftUpperArm' | 'leftLowerArm' | 'leftHand' |
   'rightUpperLeg' | 'rightLowerLeg' | 'rightFoot' |
-  'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'accessory';
+  'leftUpperLeg' | 'leftLowerLeg' | 'leftFoot' | 'extraParts';
 
 @Entity()
 export class DollPart {

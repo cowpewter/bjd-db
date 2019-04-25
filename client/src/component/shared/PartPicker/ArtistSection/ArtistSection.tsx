@@ -1,28 +1,28 @@
 import CountryInput from '@component/shared/CountryInput';
-import { CompanyData } from '@component/shared/PartPicker';
-import { MinimalCompany } from '@store/type/Company';
+import { FaceupArtistData } from '@component/shared/PartPicker';
+import { MinimalFaceupArtist } from '@store/type/FaceupArtist';
 import { AutoComplete, Button, Form, Input, Popover } from 'antd';
 import { SelectValue } from 'antd/lib/select';
 import React, { ChangeEvent, Component, Fragment, ReactElement } from 'react';
 import { MutationFn } from 'react-apollo';
 
-import { CreateCompanyOutput } from '@store/query/CreateCompany';
-import { GetCompaniesQuery, GQL_GET_COMPANIES } from '@store/query/GetCompanies';
+import { CreateFaceupArtistOutput } from '@store/query/CreateFaceupArtist';
+import { GetFaceupArtistsQuery, GQL_GET_FACEUP_ARTISTS } from '@store/query/GetFaceupArtists';
 
 const sharedStyle = require('@component/shared/PartPicker/PartPicker.m.less');
 
 interface Props {
-  canChangeCompany: boolean;
-  company?: CompanyData;
+  artist?: FaceupArtistData;
+  partType: Parts;
   fieldErrors?: { [key: string]: string };
-  createCompany: MutationFn<CreateCompanyOutput>;
+  createFaceupArtist: MutationFn<CreateFaceupArtistOutput>;
   getPopoverParent: (triggerNode: HTMLElement | undefined) => HTMLElement;
   filterOption: (inputValue: string, option: ReactElement) => boolean;
   onNameChange: (newValue: string) => void;
   onCountryChange: (newValue: string) => void;
   onWebsiteChange: (newValue: string) => void;
-  onCompanyChange: (newValue: string, allCompanies: MinimalCompany[]) => void;
-  onSaveCompany: (createCompany: MutationFn<CreateCompanyOutput>) => void;
+  onFaceupArtistChange: (newValue: string, allCompanies: MinimalFaceupArtist[]) => void;
+  onSaveFaceupArtist: (createFaceupArtist: MutationFn<CreateFaceupArtistOutput>) => void;
 }
 
 class CompanySection extends Component<Props> {
@@ -41,109 +41,116 @@ class CompanySection extends Component<Props> {
     onWebsiteChange(ev.target.value);
   }
 
-  private handleCompanyChange = (newValue: string, allCompanies: MinimalCompany[]) => {
-    const { onCompanyChange } = this.props;
-    onCompanyChange(newValue, allCompanies);
+  private handleArtistChange = (newValue: string, allArtists: MinimalFaceupArtist[]) => {
+    const { onFaceupArtistChange } = this.props;
+    onFaceupArtistChange(newValue, allArtists);
   }
 
   private handlePartSave = () => {
-    const { createCompany, onSaveCompany } = this.props;
-    onSaveCompany(createCompany);
+    const { createFaceupArtist, onSaveFaceupArtist } = this.props;
+    onSaveFaceupArtist(createFaceupArtist);
   }
 
   render() {
     const {
       children,
-      canChangeCompany,
-      company,
+      artist,
+      partType,
       fieldErrors,
       getPopoverParent,
       filterOption,
     } = this.props;
 
     return (
-      <GetCompaniesQuery query={GQL_GET_COMPANIES}>
+      <GetFaceupArtistsQuery query={GQL_GET_FACEUP_ARTISTS}>
         {({ loading, error, data }) => {
           if (loading) {
-            return <p>Loading Companies...</p>;
+            return <p>Loading Artists...</p>;
           }
           if (error || !data) {
             return <p>An unexpected error has occurred.</p>;
           }
-          const { getCompanies: companies } = data;
-          const companyDataSource = companies.map(company => (
-            <AutoComplete.Option key={company.id} value={company.id}>
-              {company.name}
+          const { getFaceupArtists: artists } = data;
+          const artistDataSource = artists.map(artist => (
+            <AutoComplete.Option key={artist.id} value={artist.id}>
+              {artist.name}
             </AutoComplete.Option>
           ));
-          companyDataSource.push(
+          artistDataSource.push(
             <AutoComplete.Option key="new" value="new">
               Create New...
+            </AutoComplete.Option>,
+          );
+          artistDataSource.unshift(
+            <AutoComplete.Option key="none" value="none">
+              {partType === 'head' ? 'No Faceup' : 'No Blushing'}
             </AutoComplete.Option>,
           );
 
           return (
             <Fragment>
               <Popover
-                visible={company && company.id === 'new'}
+                visible={artist && artist.id === 'new'}
                 getPopupContainer={getPopoverParent}
                 placement="right"
-                title="Create New Company"
+                title="Create New Artist"
                 content={(
                   <div className={sharedStyle.newItemForm}>
                     <Form.Item
-                      label="Company Name"
+                      label="Artist's Name"
                       validateStatus={
-                        fieldErrors && fieldErrors['newCompany-name'] ? 'error' : ''
+                        fieldErrors && fieldErrors['newFaceupArtist-name'] ? 'error' : ''
                       }
-                      help={!!fieldErrors && fieldErrors['newCompany-name']}
+                      help={!!fieldErrors && fieldErrors['newFaceupArtist-name']}
                     >
                       <Input
-                        value={company ? company.name : undefined}
+                        value={artist ? artist.name : undefined}
                         onChange={this.handleNameChange}
                       />
                     </Form.Item>
                     <Form.Item
                       label="Country of Origin"
                       validateStatus={
-                        fieldErrors && fieldErrors['newCompany-country'] ? 'error' : ''
+                        fieldErrors && fieldErrors['newFaceupArtist-country'] ? 'error' : ''
                       }
-                      help={!!fieldErrors && fieldErrors['newCompany-country']}
+                      help={!!fieldErrors && fieldErrors['newFaceupArtist-country']}
                     >
                       <CountryInput
                         placeholder="Select a Country"
                         style={{ width: '100%' }}
-                        value={company ? company.country : undefined}
+                        value={artist ? artist.country : undefined}
                         onChange={this.handleCountryChange}
                       />
                     </Form.Item>
                     <Form.Item
-                      label="Company Website"
+                      label="Artist's Website"
                       validateStatus={
-                        fieldErrors && fieldErrors['newCompany-website'] ? 'error' : ''
+                        fieldErrors && fieldErrors['newFaceupArtist-website'] ? 'error' : ''
                       }
-                      help={!!fieldErrors && fieldErrors['newCompany-website']}
+                      help={!!fieldErrors && fieldErrors['newFaceupArtist-website']}
                     >
                       <Input
-                        value={company ? company.website : undefined}
+                        value={artist ? artist.website : undefined}
                         onChange={this.handleWebsiteChange}
                       />
                     </Form.Item>
                     <Button type="primary" onClick={this.handlePartSave}>
-                      Save Company
+                      Save Artist
                     </Button>
                   </div>
                 )}
               >
-                <Form.Item label="Company" className={sharedStyle.mainFormItem}>
+                <Form.Item
+                  label={partType === 'head' ? 'Faceup Artist' : 'Blushing Artist'}
+                  className={sharedStyle.mainFormItem}
+                >
                   <AutoComplete
-                    placeholder="Company Name"
-                    disabled={!canChangeCompany}
-                    dataSource={companyDataSource}
+                    placeholder="Artist's Name"
+                    dataSource={artistDataSource}
                     onChange={
-                      value => this.handleCompanyChange(value as string, companies)
+                      value => this.handleArtistChange(value as string, artists)
                     }
-                    value={company ? company.id : undefined}
+                    value={artist ? artist.id : undefined}
                     filterOption={filterOption}
                   />
                 </Form.Item>
@@ -152,7 +159,7 @@ class CompanySection extends Component<Props> {
             </Fragment>
           );
         }}
-      </GetCompaniesQuery>
+      </GetFaceupArtistsQuery>
     );
   }
 }

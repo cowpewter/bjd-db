@@ -42,7 +42,11 @@ const resolver = {
       getRepository(Company).findOne(args.id),
 
     getCompanies: () =>
-      getRepository(Company).find(),
+      getRepository(Company).find({
+        order: {
+          name: 'ASC',
+        },
+      }),
   },
 
   Mutation: {
@@ -66,11 +70,7 @@ const resolver = {
       const company = new Company();
       company.name = args.name;
       company.addedBy = addedBy;
-
-      if (addedBy.isMod || addedBy.isAdmin) {
-        company.vetted = true;
-      }
-
+      company.vetted = addedBy.isMod || addedBy.isAdmin;
       if (args.country) {
         company.country = args.country;
       }

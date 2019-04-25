@@ -1,16 +1,21 @@
+import Errors from '@component/shared/Errors';
+import ArtistSection from '@component/shared/PartPicker/ArtistSection';
 import CompanySection from '@component/shared/PartPicker/CompanySection';
 import PartSection from '@component/shared/PartPicker/PartSection';
 import ResinSection from '@component/shared/PartPicker/ResinSection';
 import { MinimalCompany } from '@store/type/Company';
 import { MinimalDollPart } from '@store/type/DollPart';
+import { MinimalFaceupArtist } from '@store/type/FaceupArtist';
 import { MinimalResinColor } from '@store/type/ResinColor';
+import { Button } from 'antd';
 import { GraphQLError } from 'graphql';
-import React, { Component, ReactElement } from 'react';
+import React, { Component, Fragment, ReactElement } from 'react';
 import { MutationFn } from 'react-apollo';
 
 import { GQL_GET_COMPANIES } from '@store/query/GetCompanies';
 import { GQL_GET_COMPANY_PARTS } from '@store/query/GetCompanyParts';
 import { GQL_GET_COMPANY_RESIN } from '@store/query/GetCompanyResin';
+import { GQL_GET_FACEUP_ARTISTS } from '@store/query/GetFaceupArtists';
 
 import {
   CreateCompanyMutation,
@@ -23,15 +28,15 @@ import {
   GQL_CREATE_DOLL_PART,
 } from '@store/query/CreateDollPart';
 import {
+  CreateFaceupArtistMutation,
+  CreateFaceupArtistOutput,
+  GQL_CREATE_FACEUP_ARTIST,
+} from '@store/query/CreateFaceupArtist';
+import {
   CreateResinColorMutation,
   CreateResinColorOutput,
   GQL_CREATE_RESIN_COLOR,
 } from '@store/query/CreateResinColor';
-import {
-  CreateUserPartMutation,
-  CreateUserPartOutput,
-  GQL_CREATE_USER_PART,
-} from '@store/query/CreateUserPart';
 
 export interface BodyParts {
   [key: string]: PartData | undefined;
@@ -51,7 +56,7 @@ export interface BodyParts {
   leftUpperLeg?: PartData;
   leftLowerLeg?: PartData;
   leftFoot?: PartData;
-  accessory?: PartData;
+  extraParts?: PartData;
 }
 
 export const bodyParts = [
@@ -120,6 +125,7 @@ export interface State {
   parts: BodyParts;
   company?: CompanyData;
   resinColor?: ResinColorData;
+  artist?: FaceupArtistData;
 
   errorMsgs?: string[];
   fieldErrors?: { [key: string]: string };
@@ -127,10 +133,11 @@ export interface State {
 
 const filterOption =
   (inputValue: string, option: ReactElement) => {
-    console.warn(inputValue);
     const input = inputValue.toLowerCase();
     const opt = option.props.children.toLowerCase();
-    return option.props.value === 'new' || opt.indexOf(input) !== -1;
+    return option.props.value === 'new' ||
+      option.props.value === 'none' ||
+      opt.indexOf(input) !== -1;
   };
 
 const getPopoverParent = (triggerNode: HTMLElement | undefined): HTMLElement => {
@@ -141,7 +148,6 @@ const getPopoverParent = (triggerNode: HTMLElement | undefined): HTMLElement => 
   do {
     if (node.parentElement) {
       node = node.parentElement;
-      console.warn(node.classList);
       if (node.classList.contains('ant-modal-wrap')) {
         return node;
       }
@@ -151,9 +157,6 @@ const getPopoverParent = (triggerNode: HTMLElement | undefined): HTMLElement => 
 
   return document.body;
 };
-
-/* tslint:disable:max-line-length */
-/* Yeah this file sucks, I'm not sure how to break it up yet */
 
 class PartPicker extends Component<Props, State> {
   constructor(props: Props) {
@@ -177,12 +180,43 @@ class PartPicker extends Component<Props, State> {
         leftUpperLeg: undefined,
         leftLowerLeg: undefined,
         leftFoot: undefined,
-        accessory: undefined,
+        extraParts: undefined,
       },
       resinColor: undefined,
+      artist: undefined,
       errorMsgs: [],
       fieldErrors: {},
     };
+  }
+
+  private resetState = () => {
+    const { company } = this.props;
+    this.setState({
+      company: company ? company : undefined,
+      parts: {
+        head: undefined,
+        body: undefined,
+        upperBody: undefined,
+        lowerBody: undefined,
+        rightUpperArm: undefined,
+        rightLowerArm: undefined,
+        rightHand: undefined,
+        leftUpperArm: undefined,
+        leftLowerArm: undefined,
+        leftHand: undefined,
+        rightUpperLeg: undefined,
+        rightLowerLeg: undefined,
+        rightFoot: undefined,
+        leftUpperLeg: undefined,
+        leftLowerLeg: undefined,
+        leftFoot: undefined,
+        extraParts: undefined,
+      },
+      resinColor: undefined,
+      artist: undefined,
+      errorMsgs: [],
+      fieldErrors: {},
+    });
   }
 
   private handleCompanyChange = (newValue: string, allCompanies: MinimalCompany[]) => {
@@ -239,7 +273,6 @@ class PartPicker extends Component<Props, State> {
     }
     createCompany({ variables: { ...company } })
       .then((resp) => {
-        console.warn(resp);
         if (!resp || !resp.data) {
           const errors = ['An unexpected error has occured.'];
           this.setState({ errorMsgs: errors });
@@ -263,7 +296,6 @@ class PartPicker extends Component<Props, State> {
                 });
               }
               this.setState({ fieldErrors });
-              console.warn(fieldErrors);
             }
           });
         }
@@ -304,12 +336,7 @@ class PartPicker extends Component<Props, State> {
     const { parts, company } = this.state;
     const { partType, scale } = this.props;
     const part = parts[partType];
-    console.warn({
-      scale,
-      name: part && part.name,
-      type: partType === 'body' ? 'upperBody' : partType,
-      companyId: company && company.id,
-    });
+
     createDollPart({ variables: {
       scale,
       name: part && part.name,
@@ -317,7 +344,6 @@ class PartPicker extends Component<Props, State> {
       companyId: company && company.id,
     } })
       .then((resp) => {
-        console.warn(resp);
         if (!resp || !resp.data) {
           const errors = ['An unexpected error has occured.'];
           this.setState({ errorMsgs: errors });
@@ -342,7 +368,6 @@ class PartPicker extends Component<Props, State> {
                 });
               }
               this.setState({ fieldErrors });
-              console.warn(fieldErrors);
             }
           });
         }
@@ -396,7 +421,6 @@ class PartPicker extends Component<Props, State> {
       companyId: company && company.id,
     } })
       .then((resp) => {
-        console.warn(resp);
         if (!resp || !resp.data) {
           const errors = ['An unexpected error has occured.'];
           this.setState({ errorMsgs: errors });
@@ -421,7 +445,6 @@ class PartPicker extends Component<Props, State> {
                 });
               }
               this.setState({ fieldErrors });
-              console.warn(fieldErrors);
             }
           });
         }
@@ -429,8 +452,113 @@ class PartPicker extends Component<Props, State> {
       });
   }
 
+  private handleFaceupArtistChange = (newValue: string, allArtists: MinimalFaceupArtist[]) => {
+    if (newValue === 'new' || newValue === 'none') {
+      this.setState({ artist: { id: newValue } });
+      return;
+    }
+    const artist = allArtists.find(artist => artist.id === newValue);
+    this.setState({ artist });
+  }
+
+  private handleNewFaceupArtistNameChange = (newValue: string) => {
+    const { artist } = this.state;
+    if (artist && artist.id === 'new') {
+      artist.name = newValue;
+      this.setState({ artist });
+    }
+  }
+
+  private handleNewFaceupArtistCountryChange = (newValue: string) => {
+    const { artist } = this.state;
+    if (artist && artist.id === 'new') {
+      artist.country = newValue;
+      this.setState({ artist });
+    }
+  }
+
+  private handleNewFaceupArtistWebsiteChange = (newValue: string) => {
+    const { artist } = this.state;
+    let { fieldErrors } = this.state;
+    fieldErrors = fieldErrors || {};
+
+    if (artist && artist.id === 'new') {
+      artist.website = newValue;
+      if (!newValue.match(/^http(s?):\/\//)) {
+        fieldErrors['newFaceupArtist-website'] = 'URL must start with http:// or https://';
+      } else if (newValue.indexOf('.') === -1) {
+        fieldErrors['newFaceupArtist-website'] = 'Please enter a valid URL';
+      } else {
+        delete fieldErrors['newFaceupArtist-website'];
+      }
+
+      this.setState({ artist, fieldErrors });
+    }
+  }
+
+  private handleCreateFaceupArtist = (createFaceupArtist: MutationFn<CreateFaceupArtistOutput>) => {
+    const { artist, fieldErrors } = this.state;
+    if (!artist || artist.id !== 'new') {
+      return;
+    }
+    if (fieldErrors && fieldErrors['newCompany-website']) {
+      return;
+    }
+    createFaceupArtist({ variables: { ...artist } })
+      .then((resp) => {
+        if (!resp || !resp.data) {
+          const errors = ['An unexpected error has occured.'];
+          this.setState({ errorMsgs: errors });
+          return;
+        }
+        this.setState({ artist: resp.data.createFaceupArtist });
+      })
+      .catch((errors) => {
+        const errorMsgs: string[] = [];
+        if (errors.graphQLErrors) {
+          errors.graphQLErrors.forEach((error: GraphQLError) => {
+            if (error.message) {
+              errorMsgs.push(error.message);
+            }
+            if (error.extensions) {
+              const { validationErrors } = error.extensions.exception;
+              const fieldErrors: any = {};
+              if (validationErrors) {
+                Object.keys(validationErrors).forEach((fieldName) => {
+                  fieldErrors[`newFaceupArtist-${fieldName}`] = validationErrors[fieldName];
+                });
+              }
+              this.setState({ fieldErrors });
+            }
+          });
+        }
+        this.setState({ errorMsgs });
+      });
+  }
+
+  private handleSaveUserPart = () => {
+    const { onSavePart, partType } = this.props;
+    const { parts, company, resinColor, artist } = this.state;
+    const part = parts[partType];
+
+    if (!company || !part || !resinColor) {
+      return;
+    }
+
+    const userPart: UserPartData = {
+      company,
+      part,
+      resinColor,
+      artist,
+      id: 'new',
+    };
+
+    onSavePart(userPart);
+    this.resetState();
+  }
+
   render () {
-    const { company, parts, resinColor, errorMsgs, fieldErrors } = this.state;
+    const { company, parts, resinColor, artist, errorMsgs, fieldErrors } = this.state;
     const { className, company: fixedCompany, partType, scale } = this.props;
     const part = parts[partType];
 
@@ -443,7 +571,7 @@ class PartPicker extends Component<Props, State> {
       variables: {
         scale,
         companyId: company ? company.id : undefined,
-        type: partType,
+        type: partType === 'body' ? 'upperBody' : partType,
       },
     }];
 
@@ -452,11 +580,9 @@ class PartPicker extends Component<Props, State> {
       variables: { companyId: company ? company.id : undefined },
     }];
 
-    /*
-    const refetchUserParts = [{
-      query:
-    }]
-    */
+    const refetchArtists = [{
+      query: GQL_GET_FACEUP_ARTISTS,
+    }];
 
     return (
       <div className={className}>
@@ -475,19 +601,18 @@ class PartPicker extends Component<Props, State> {
                   refetchQueries={refetchResinColors}
                 >
                   {createResinColor => (
-                    <CreateUserPartMutation
-                      mutation={GQL_CREATE_USER_PART}
-                      refetchQueries={['getUserParts']}
+                    <CreateFaceupArtistMutation
+                      mutation={GQL_CREATE_FACEUP_ARTIST}
+                      refetchQueries={refetchArtists}
                     >
-                      {(createUserPart) => {
+                      {(createFaceupArtist) => {
                         const companySectionProps = {
                           company,
-                          errorMsgs,
                           fieldErrors,
                           createCompany,
                           getPopoverParent,
                           filterOption,
-                          canChangeCompany: !!fixedCompany,
+                          canChangeCompany: !fixedCompany,
                           onNameChange: this.handleNewCompanyNameChange,
                           onCountryChange: this.handleNewCompanyCountryChange,
                           onWebsiteChange: this.handleNewCompanyWebsiteChange,
@@ -496,44 +621,67 @@ class PartPicker extends Component<Props, State> {
                         };
 
                         return (
-                          <CompanySection {...companySectionProps}>
-                          {!!company && company.id !== 'new' && (
-                            <PartSection
-                              scale={scale}
-                              company={company}
-                              partType={partType}
-                              part={part}
-                              fieldErrors={fieldErrors}
-                              createDollPart={createDollPart}
-                              getPopoverParent={getPopoverParent}
-                              filterOption={filterOption}
-                              onNameChange={this.handleNewPartNameChange}
-                              onPartChange={this.handlePartChange}
-                              onSavePart={this.handleCreateDollPart}
-                            >
-                            {!!part && part.id !== 'new' && (
-                              <ResinSection
-                                company={company}
-                                resinColor={resinColor}
-                                fieldErrors={fieldErrors}
-                                createResinColor={createResinColor}
-                                getPopoverParent={getPopoverParent}
-                                filterOption={filterOption}
-                                onNameChange={this.handleNewResinColorNameChange}
-                                onTypeChange={this.handleNewResinColorTypeChange}
-                                onColorFamilyChange={this.handleNewResinColorFamilyChange}
-                                onResinColorChange={this.handleResinChange}
-                                onSaveResinColor={this.handleCreateResinColor}
-                              >
-                                Test
-                              </ResinSection>
-                            )}
-                            </PartSection>
-                          )}
-                          </CompanySection>
+                          <Fragment>
+                            <Errors errors={errorMsgs || []} />
+                            <CompanySection {...companySectionProps}>
+                              {!!company && company.id !== 'new' && (
+                                <PartSection
+                                  scale={scale}
+                                  company={company}
+                                  partType={partType}
+                                  part={part}
+                                  fieldErrors={fieldErrors}
+                                  createDollPart={createDollPart}
+                                  getPopoverParent={getPopoverParent}
+                                  filterOption={filterOption}
+                                  onNameChange={this.handleNewPartNameChange}
+                                  onPartChange={this.handlePartChange}
+                                  onSavePart={this.handleCreateDollPart}
+                                >
+                                {!!part && part.id !== 'new' && (
+                                  <ResinSection
+                                    company={company}
+                                    resinColor={resinColor}
+                                    fieldErrors={fieldErrors}
+                                    createResinColor={createResinColor}
+                                    getPopoverParent={getPopoverParent}
+                                    filterOption={filterOption}
+                                    onNameChange={this.handleNewResinColorNameChange}
+                                    onTypeChange={this.handleNewResinColorTypeChange}
+                                    onColorFamilyChange={this.handleNewResinColorFamilyChange}
+                                    onResinColorChange={this.handleResinChange}
+                                    onSaveResinColor={this.handleCreateResinColor}
+                                  >
+                                    {!!resinColor && resinColor.id !== 'new' && (
+                                      <ArtistSection
+                                        artist={artist}
+                                        partType={partType}
+                                        fieldErrors={fieldErrors}
+                                        createFaceupArtist={createFaceupArtist}
+                                        getPopoverParent={getPopoverParent}
+                                        filterOption={filterOption}
+                                        onNameChange={this.handleNewFaceupArtistNameChange}
+                                        onCountryChange={this.handleNewFaceupArtistCountryChange}
+                                        onWebsiteChange={this.handleNewFaceupArtistWebsiteChange}
+                                        onFaceupArtistChange={this.handleFaceupArtistChange}
+                                        onSaveFaceupArtist={this.handleCreateFaceupArtist}
+                                      >
+                                        {!!artist && artist.id !== 'new' && (
+                                          <Button type="primary" onClick={this.handleSaveUserPart}>
+                                            {partType === 'extraParts' ? 'Add Part' : 'Save Part'}
+                                          </Button>
+                                        )}
+                                      </ArtistSection>
+                                    )}
+                                  </ResinSection>
+                                )}
+                                </PartSection>
+                              )}
+                            </CompanySection>
+                          </Fragment>
                         );
                       }}
-                      </CreateUserPartMutation>
+                      </CreateFaceupArtistMutation>
                     )}
                 </CreateResinColorMutation>
                 )}

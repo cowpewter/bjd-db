@@ -2,14 +2,19 @@
   display: flex;
 }
 
-.scale {
+.measurementsWrapper {
   flex-grow: 1;
   margin-right: 12px;
+
+  :global .ant-form-item:first-child {
+    margin-bottom: 12px;  
+  }
 }
 
 .hybridWrapper {
   flex-grow: 1;
   margin-left: 12px;
+  margin-top: 24px;
 
   :global .ant-form-item:first-child {
     margin-bottom: 12px;  
@@ -22,6 +27,7 @@
 
 .pickerView {
   margin-right: 12px;
+  flex-shrink: 0;
 }
 
 .picker {

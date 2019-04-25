@@ -14,7 +14,7 @@ const sharedStyle = require('@component/Modal/SharedStyles.m.less');
 const style = require('./CreateDollStep.m.less');
 
 interface CreateDollStepProps {
-  nextStep: (dollId: string) => void;
+  nextStep: (dollId: string, wishlistId?: string) => void;
   closeModal: MutationFn<null>;
   createDoll: MutationFn<CreateDollResponse>;
   form: WrappedFormUtils;
@@ -47,7 +47,6 @@ class CreateDollStep extends Component<CreateDollStepProps, CreateDollStepState>
     }
 
     this.props.form.validateFields(async (err, values) => {
-      console.warn(values);
       if (!err) {
         const data = {
           name: values.name,
@@ -63,14 +62,13 @@ class CreateDollStep extends Component<CreateDollStepProps, CreateDollStepState>
         };
         this.props.createDoll({ variables: { data } })
           .then((resp) => {
-            console.warn(resp);
             if (!resp || !resp.data) {
               const errors = ['An unexpected error has occured.'];
               this.setState({ errorMsgs: errors });
               return;
             }
             const dollId = resp.data.createDoll.id;
-            this.props.nextStep(dollId);
+            this.props.nextStep(dollId, values.wishlist ? values.wishlist.id : undefined);
           })
           .catch((errors) => {
             const errorMsgs: string[] = [];

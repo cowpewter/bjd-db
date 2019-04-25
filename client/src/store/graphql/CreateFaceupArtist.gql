@@ -1,0 +1,7 @@
+mutation createFaceupArtist($name: String!, $country: String, $website: String) {
+  createFaceupArtist(name: $name, country: $country, website: $website) {
+    id
+    name
+    vetted
+  }
+}

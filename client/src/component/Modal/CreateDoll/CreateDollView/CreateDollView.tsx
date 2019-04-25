@@ -1,5 +1,5 @@
 import { CreateDollResponse } from '@store/query/CreateDoll';
-import { DollConfiguration } from '@store/type/DollConfiguration';
+import { CreateDollConfigOutput } from '@store/query/CreateDollConfiguration';
 import { Me } from '@store/type/Me';
 import React from 'react';
 import { MutationFn } from 'react-apollo';
@@ -13,31 +13,36 @@ interface CreateDollViewProps {
   user: Me;
   closeModal: MutationFn<null>;
   createDoll: MutationFn<CreateDollResponse>;
-  saveDollConfig: MutationFn<DollConfiguration>;
+  saveDollConfig: MutationFn<CreateDollConfigOutput>;
 }
 
 interface CreateDollViewState {
   step: Step;
   dollId?: string;
+  wishlistId?: string;
+  dollConfigId?: string;
 }
 
 class CreateDollView extends React.Component<CreateDollViewProps, CreateDollViewState> {
   state: CreateDollViewState = {
     step: 'doll',
     dollId: undefined,
+    wishlistId: undefined,
+    dollConfigId: undefined,
   };
 
-  private toConfigParts = (dollId: string) => {
-    this.setState({ dollId, step: 'config' });
+  private toConfigParts = (dollId: string, wishlistId?: string) => {
+    this.setState({ dollId, wishlistId, step: 'config' });
   }
 
-  private toPurchases = () => {
-    this.setState({ step: 'purchase' });
+  private toPurchases = (dollConfigId: string) => {
+    console.warn('hey', dollConfigId);
+    this.setState({ dollConfigId, step: 'purchase' });
   }
 
   render() {
     const { user, createDoll, saveDollConfig, closeModal } = this.props;
-    const { step, dollId } = this.state;
+    const { step, dollId, wishlistId } = this.state;
 
     switch (step) {
       case 'doll':
@@ -54,6 +59,7 @@ class CreateDollView extends React.Component<CreateDollViewProps, CreateDollView
             closeModal={closeModal}
             configParts={saveDollConfig}
             dollId={dollId}
+            wishlistId={wishlistId}
             nextStep={this.toPurchases}
           />
         );

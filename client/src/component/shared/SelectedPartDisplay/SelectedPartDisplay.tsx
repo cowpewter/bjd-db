@@ -3,8 +3,10 @@ import { UserPartData } from '@component/shared/PartPicker';
 import { isArray, startCase } from 'lodash';
 import React, { Component } from 'react';
 
+const sharedStyle = require('@component/Modal/SharedStyles.m.less');
+
 interface Props {
-  parts: UserPartData | UserPartData[];
+  parts?: UserPartData | UserPartData[];
   selectedPart: Parts;
   className?: string;
   onRemoveItem: (item: UserPartData) => void;
@@ -22,6 +24,10 @@ const partToString = (part?: UserPartData) => {
 class SelectedPartDisplay extends Component<Props> {
   private handleRemove = (index: number) => {
     const { onRemoveItem, parts } = this.props;
+    console.log('remove', parts);
+    if (!parts) {
+      return;
+    }
     if (isArray(parts)) {
       onRemoveItem(parts[index]);
     } else {
@@ -31,16 +37,20 @@ class SelectedPartDisplay extends Component<Props> {
 
   render() {
     const { className, parts: propParts, selectedPart } = this.props;
-    const parts: UserPartData[] = isArray(propParts) ? propParts : [propParts];
+    const parts: UserPartData[] = isArray(propParts) ? propParts : (propParts ? [propParts] :[]);
+
+    if (!parts.length) {
+      return <h3>{`Selecting ${startCase(selectedPart)}:`}</h3>;
+    }
 
     return (
       <div className={className}>
         <h3>Selected {startCase(selectedPart)}:</h3>
         {parts.map((part, index) => (
           <p key={index}>{partToString(part)}&nbsp;
-            <span className="subtitle" onClick={() => this.handleRemove(index)}>
+            <a className={sharedStyle.subtitle} onClick={() => this.handleRemove(index)}>
               <FaIcon type="light" icon="times" /> remove
-            </span>
+            </a>
           </p>
         ))}
       </div>
