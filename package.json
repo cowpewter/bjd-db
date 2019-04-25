@@ -95,7 +95,8 @@
     "lint": "./node_modules/.bin/tslint -p tslint.json",
     "gen-migration": "ts-node ./node_modules/typeorm/cli.js migration:generate",
     "create-migration": "ts-node ./node_modules/typeorm/cli.js migration:create",
-    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run"
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "rollback": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "precommit": "lint",
   "engines": {

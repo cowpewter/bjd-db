@@ -20,5 +20,5 @@ export interface DollConfiguration {
   leftUpperLeg: UserPart | null;
   leftLowerLeg: UserPart | null;
   leftFoot: UserPart | null;
-  extraParts: UserPart[];
+  accessories: UserPart[];
 }

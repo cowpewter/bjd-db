@@ -20,7 +20,7 @@ export class DollConfiguration {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ default: null })
+  @Column({ nullable: true })
   height: number; // in cm
 
   @Column()
@@ -82,7 +82,7 @@ export class DollConfiguration {
 
   @ManyToMany(() => UserPart)
   @JoinTable()
-  extraParts: UserPart[];
+  accessories: UserPart[];
 
   @Column('timestamp', { nullable: true })
   deleteTimestamp: Date;

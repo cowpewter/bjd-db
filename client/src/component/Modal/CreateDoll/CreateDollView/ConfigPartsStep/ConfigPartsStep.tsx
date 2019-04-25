@@ -34,7 +34,7 @@ export interface BodyParts {
   leftUpperLeg?: UserPartData;
   leftLowerLeg?: UserPartData;
   leftFoot?: UserPartData;
-  extraParts: UserPartData[];
+  accessories: UserPartData[];
 }
 
 interface Props {
@@ -92,7 +92,7 @@ class ConfigPartsStep extends Component<Props, State> {
       leftUpperLeg: undefined,
       leftLowerLeg: undefined,
       leftFoot: undefined,
-      extraParts: [],
+      accessories: [],
     },
   };
 
@@ -227,7 +227,7 @@ class ConfigPartsStep extends Component<Props, State> {
     const newState: any = {
       isComplexHybrid: newValue,
     };
-    if (!newValue && selectedPart !== 'head' && selectedPart !== 'extraParts') {
+    if (!newValue && selectedPart !== 'head' && selectedPart !== 'accessories') {
       newState.selectedPart = 'body';
     }
     if (newValue && selectedPart === 'body') {
@@ -246,7 +246,7 @@ class ConfigPartsStep extends Component<Props, State> {
     if ((parts.head || parts.body || parts.upperBody || parts.lowerBody || parts.rightUpperArm ||
       parts.rightLowerArm || parts.rightHand || parts.leftUpperArm || parts.leftLowerArm ||
       parts.leftHand || parts.rightUpperLeg || parts.rightLowerLeg || parts.rightFoot ||
-      parts.leftUpperLeg || parts.leftLowerLeg || parts.leftFoot || parts.extraParts.length) &&
+      parts.leftUpperLeg || parts.leftLowerLeg || parts.leftFoot || parts.accessories.length) &&
       scale !== value
     ) {
       Modal.confirm({
@@ -281,7 +281,7 @@ class ConfigPartsStep extends Component<Props, State> {
         leftUpperLeg: undefined,
         leftLowerLeg: undefined,
         leftFoot: undefined,
-        extraParts: [],
+        accessories: [],
       },
       scale: newScale,
     });
@@ -293,9 +293,9 @@ class ConfigPartsStep extends Component<Props, State> {
 
   private handleRemoveItem = (part: UserPartData) => {
     const { parts, selectedPart } = this.state;
-    if (selectedPart === 'extraParts') {
-      const index = findIndex(parts.extraParts, item => isEqual(item, part));
-      parts.extraParts.splice(index, 1);
+    if (selectedPart === 'accessories') {
+      const index = findIndex(parts.accessories, item => isEqual(item, part));
+      parts.accessories.splice(index, 1);
     } else {
       parts[selectedPart] = undefined;
     }
@@ -317,8 +317,8 @@ class ConfigPartsStep extends Component<Props, State> {
 
   private handleSavePart = (newPart: UserPartData) => {
     const { parts, selectedPart } = this.state;
-    if (selectedPart === 'extraParts') {
-      parts.extraParts.push(newPart);
+    if (selectedPart === 'accessories') {
+      parts.accessories.push(newPart);
     } else {
       parts[selectedPart] = newPart;
     }
@@ -421,7 +421,7 @@ class ConfigPartsStep extends Component<Props, State> {
               parts={parts}
               onRemoveItem={this.handleRemoveItem}
             />
-            {(!parts || selectedPart === 'extraParts') && (
+            {(!parts || selectedPart === 'accessories') && (
               <PartPicker
                 className={style.picker}
                 scale={scale}

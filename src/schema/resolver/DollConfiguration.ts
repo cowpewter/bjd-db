@@ -52,7 +52,7 @@ interface CreateDollConfigArgs {
       leftUpperLeg: UserPartInput;
       leftLowerLeg: UserPartInput;
       leftFoot: UserPartInput;
-      extraParts: UserPartInput[];
+      accessories: UserPartInput[];
     }
   };
 }
@@ -154,7 +154,7 @@ const resolver = {
       getRepository(UserPart)
         .findOne({ where: { leftFoot: parent } }),
 
-    extraParts: (parent: DollConfiguration) =>
+    accessories: (parent: DollConfiguration) =>
       getRepository(UserPart)
         .find({ where: { extraPart: parent } }),
   },
@@ -182,11 +182,11 @@ const resolver = {
       const partsToSave: UserPart[] = [];
 
       await Promise.all(Object.keys(args.data.parts).map(async (partType) => {
-        if (partType === 'extraParts') {
+        if (partType === 'accessories') {
           // Extra parts are straightforward, it's just an array
-          args.data.parts.extraParts.forEach((partData) => {
+          args.data.parts.accessories.forEach((partData) => {
             const userPart = makeUserPartFromData(partData, user);
-            config.extraParts.push(userPart);
+            config.accessories.push(userPart);
             if (!userPart.id) {
               partsToSave.push(userPart);
             }

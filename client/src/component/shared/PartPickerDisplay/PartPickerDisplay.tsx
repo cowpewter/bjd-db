@@ -114,7 +114,7 @@ class PartPickerDisplay extends Component<Props> {
   private handleExtraClick = () => {
     const { onSelectedPartChange } = this.props;
     if (onSelectedPartChange) {
-      onSelectedPartChange('extraParts');
+      onSelectedPartChange('accessories');
     }
   }
 
@@ -232,7 +232,7 @@ class PartPickerDisplay extends Component<Props> {
 
         <Tooltip title="Edit Accessories and Extra Parts">
           <div
-            className={`${style.extraParts} selectable ${selected === 'extraParts' ? 'selected' : ''}`}
+            className={`${style.accessories} selectable ${selected === 'accessories' ? 'selected' : ''}`}
             onClick={this.handleExtraClick}
           >Extra</div>
         </Tooltip>

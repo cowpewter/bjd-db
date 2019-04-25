@@ -27,7 +27,7 @@ input PartsInput {
   leftUpperLeg: UserPartInput
   leftLowerLeg: UserPartInput
   leftFoot: UserPartInput
-  extraParts: [UserPartInput!]
+  accessories: [UserPartInput!]
 }
 
 input UserPartInput {
@@ -58,5 +58,5 @@ type DollConfiguration {
   leftUpperLeg: UserPart
   leftLowerLeg: UserPart
   leftFoot: UserPart
-  extraParts: [UserPart!]
+  accessories: [UserPart!]
 }

@@ -56,7 +56,7 @@ export interface BodyParts {
   leftUpperLeg?: PartData;
   leftLowerLeg?: PartData;
   leftFoot?: PartData;
-  extraParts?: PartData;
+  accessories?: PartData;
 }
 
 export const bodyParts = [
@@ -180,7 +180,7 @@ class PartPicker extends Component<Props, State> {
         leftUpperLeg: undefined,
         leftLowerLeg: undefined,
         leftFoot: undefined,
-        extraParts: undefined,
+        accessories: undefined,
       },
       resinColor: undefined,
       artist: undefined,
@@ -210,7 +210,7 @@ class PartPicker extends Component<Props, State> {
         leftUpperLeg: undefined,
         leftLowerLeg: undefined,
         leftFoot: undefined,
-        extraParts: undefined,
+        accessories: undefined,
       },
       resinColor: undefined,
       artist: undefined,
@@ -668,7 +668,7 @@ class PartPicker extends Component<Props, State> {
                                       >
                                         {!!artist && artist.id !== 'new' && (
                                           <Button type="primary" onClick={this.handleSaveUserPart}>
-                                            {partType === 'extraParts' ? 'Add Part' : 'Save Part'}
+                                            {partType === 'accessories' ? 'Add Part' : 'Save Part'}
                                           </Button>
                                         )}
                                       </ArtistSection>
